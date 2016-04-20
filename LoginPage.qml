@@ -18,7 +18,7 @@ Page {
             width: parent.width
             height: 150
             radius: 3
-            backgroundColor: Palette.colors["blue"]["500"]
+            backgroundColor: Theme.primaryColor
             elevation: 1
 
             Icon {
@@ -26,10 +26,13 @@ Page {
                 name: "action/account_circle"
                 color: "white"
                 size: 48
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 32
-                anchors.left: parent.left
-                anchors.leftMargin: 50
+
+                anchors {
+                    bottom: parent.bottom
+                    bottomMargin: 32
+                    left: parent.left
+                    leftMargin: 50
+                }
             }
 
             Text {
@@ -39,10 +42,12 @@ Page {
                 font.family: "微软雅黑 Light"
                 font.pixelSize: 48
 
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 28
-                anchors.left: caption_icon.right
-                anchors.leftMargin: 16
+                anchors {
+                    bottom: parent.bottom
+                    bottomMargin: 28
+                    left: caption_icon.right
+                    leftMargin: 16
+                }
             }
         }
 
@@ -55,11 +60,11 @@ Page {
             font.pixelSize: 24
 
             width: 300
-            anchors.top: caption.bottom
-            anchors.topMargin: 64
-            anchors.horizontalCenter: parent.horizontalCenter
-
-
+            anchors {
+                top: caption.bottom
+                topMargin: 64
+                horizontalCenter: parent.horizontalCenter
+            }
         }
 
         TextField {
@@ -72,15 +77,20 @@ Page {
             font.pixelSize: 24
 
             width: 300
-            anchors.top: username.bottom
-            anchors.topMargin: 32
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors {
+                top: username.bottom
+                topMargin: 32
+                horizontalCenter: parent.horizontalCenter
+            }
         }
 
         Row {
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: password.bottom
-            anchors.topMargin: 32
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+                top: password.bottom
+                topMargin: 32
+            }
+
             spacing: 16
 
             Switch {
@@ -113,20 +123,41 @@ Page {
             }
         }
 
-        IconButton {
-            iconName: "action/done"
-            size: 48
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 32
-            anchors.horizontalCenter: parent.horizontalCenter
+        Button {
+            anchors {
+                bottom: parent.bottom
+                bottomMargin: 32
+                horizontalCenter: parent.horizontalCenter
+            }
+
+            elevation: 1
+            backgroundColor: Theme.accentColor
+
+            enabled: input_is_valid()
+            onClicked: console.log("done!")
+
+            function input_is_valid() {
+                return username.text !== "" && password.text !== "";
+            }
+
+            Icon {
+                name: "action/done"
+                size: 32
+                color: "white"
+
+                anchors.centerIn: parent
+            }
         }
     }
 
     Row {
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 32
-        anchors.right: parent.right
-        anchors.rightMargin: 32
+        anchors {
+            bottom: parent.bottom
+            bottomMargin: 32
+            right: parent.right
+            rightMargin: 32
+        }
+
         spacing: 32
 
         IconButton {
@@ -146,10 +177,13 @@ Page {
     }
 
     Row {
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 32
-        anchors.left: parent.left
-        anchors.leftMargin: 32
+        anchors {
+            bottom: parent.bottom
+            bottomMargin: 32
+            left: parent.left
+            leftMargin: 32
+        }
+
         spacing: 32
 
         IconButton {
