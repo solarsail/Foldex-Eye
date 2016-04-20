@@ -1,18 +1,22 @@
 import QtQuick 2.4
 import QtQuick.Window 2.2
+import Material 0.2
 
-Window {
+ApplicationWindow {
+    id: main
+
+    title: "Foldex-Eye"
+
     visible: true
 
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            Qt.quit();
-        }
+    theme {
+        primaryColor: "blue"
+        accentColor: Palette.colors["blue"]["800"]
+        tabHighlightColor: "white"
     }
 
-    Text {
-        text: qsTr("Hello World")
-        anchors.centerIn: parent
+    initialPage: LoginPage {
+        id: login_page
     }
+
 }
