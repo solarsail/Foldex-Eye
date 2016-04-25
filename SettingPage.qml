@@ -6,12 +6,6 @@ Page {
     id: settingpage
     title: "设置"
 
-    Button {
-        anchors.centerIn: parent
-        text: "返回登录"
-        onClicked: pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
-    }
-
     rightSidebar: PageSidebar {
         title: "选项"
 
