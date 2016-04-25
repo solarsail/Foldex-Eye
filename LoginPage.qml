@@ -1,5 +1,6 @@
 import QtQuick 2.4
 import Material 0.2
+import com.evercloud.http 0.1
 
 Page {
     actionBar.hidden: true
@@ -153,32 +154,13 @@ Page {
             onClicked: {
                 login_button.visible = false;
                 login_progress.visible = true;
-                login_worker.sendMessage({ 'username': username.text, 'password': password.text })
+                request.url = "http://192.168.1.41:8893/login";
+                request.jsonData = JSON.stringify({ 'username': username.text, 'password': password.text });
+                request.sendJson();
             }
 
             function input_is_valid() {
                 return username.text !== "" && password.text !== "";
-            }
-
-            WorkerScript { // 使用单独线程执行登录请求
-                id: login_worker
-                source: "login.js"
-                onMessage: {
-                    var code = messageObject.status;
-                    console.log(JSON.stringify(messageObject.reply, null, 2));
-                    login_progress.visible = false;
-                    login_button.visible = true;
-                    if (code === 401) {
-                        username.hasError = true;
-                        password.hasError = true;
-                        password.helperText = "用户名或密码错误";
-                    } else if (code === 500) {
-                        prompt.open("服务暂时不可用")
-                    } else {
-                        prompt.open("登录成功")
-                        // TODO: 处理成功登录
-                    }
-                }
             }
 
             Icon {
@@ -237,5 +219,30 @@ Page {
 
     Snackbar { // 通知栏
         id: prompt
+    }
+
+    Request {
+        id: request
+        onResponseChanged: {
+            var code = request.code;
+            var response = request.response;
+
+            login_progress.visible = false;
+            login_button.visible = true;
+
+            if (code === 401) {
+                username.hasError = true;
+                password.hasError = true;
+                password.helperText = "用户名或密码错误";
+            } else if (code === 500) {
+                prompt.open("服务暂时不可用")
+            } else if (code === 200) {
+                prompt.open("登录成功")
+                // TODO: 处理成功登录
+            } else {
+                prompt.open("连接服务器失败")
+            }
+        }
+
     }
 }

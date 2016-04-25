@@ -2,6 +2,5 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>LoginPage.qml</file>
-        <file>login.js</file>
     </qresource>
 </RCC>
