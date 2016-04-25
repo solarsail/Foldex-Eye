@@ -150,6 +150,19 @@ Page {
         }
     }
 
+    Dialog {
+        id: shutDownDialog
+        width: Units.dp(300)
+        text: "确定要关机吗?"
+        hasActions: true
+        positiveButtonText: "确定"
+        negativeButtonText: "取消"
+
+        onAccepted: {
+            Qt.quit()
+        }
+    }
+
     Row {
         anchors {
             bottom: parent.bottom
@@ -160,18 +173,32 @@ Page {
 
         spacing: 32
 
-        IconButton {
+        Action {
+            id: rebootAction
             iconName: "navigation/refresh"
+            text: "重启"
+        }
+
+        Action {
+            id: shutDownAction
+            iconName: "action/power_settings_new"
+            text: "关机"
+        }
+
+        IconButton {
+            action: rebootAction
             size: 32
+            hoverAnimation: true
             color: Theme.light.iconColor
         }
 
         IconButton {
-            iconName: "action/power_settings_new"
+            action: shutDownAction
             size: 32
             color: Theme.light.iconColor
+            hoverAnimation: true
             onClicked: {
-                Qt.quit();
+                shutDownDialog.show()
             }
         }
     }
@@ -186,11 +213,18 @@ Page {
 
         spacing: 32
 
-        IconButton {
+        Action {
+            id: settingAction
             iconName: "action/settings"
+            text: "系统设置"
+        }
+
+        IconButton {
+            action: settingAction
             size: 32
             hoverAnimation: true
             color: Theme.light.iconColor
+            onClicked: pageStack.push(Qt.resolvedUrl("SettingPage.qml"))
         }
     }
 }
