@@ -1,10 +1,11 @@
 import QtQuick 2.4
 import Material 0.2
+import com.evercloud.http 0.1
 
 Page {
     actionBar.hidden: true
 
-    View {
+    View { // 背景卡片
         radius: 3
         width: 400
         height: 500
@@ -12,7 +13,7 @@ Page {
         backgroundColor: "white"
         anchors.centerIn: parent
 
-        View {
+        View { // 标题板
             id: caption
 
             width: parent.width
@@ -51,13 +52,17 @@ Page {
             }
         }
 
-        TextField {
+        TextField { // 用户名输入框
             id: username
 
             placeholderText: "用户名"
             floatingLabel: true
             font.family: "微软雅黑 Light"
             font.pixelSize: 24
+
+            onTextChanged: {
+                username.hasError = false
+            }
 
             width: 300
             anchors {
@@ -67,7 +72,7 @@ Page {
             }
         }
 
-        TextField {
+        TextField { // 密码输入框
             id: password
 
             placeholderText: "密码"
@@ -75,6 +80,11 @@ Page {
             echoMode: TextInput.Password
             font.family: "微软雅黑 Light"
             font.pixelSize: 24
+
+            onTextChanged: {
+                password.hasError = false
+                password.helperText = ""
+            }
 
             width: 300
             anchors {
@@ -84,7 +94,7 @@ Page {
             }
         }
 
-        Row {
+        Row { // 开关栏
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 top: password.bottom
@@ -123,7 +133,14 @@ Page {
             }
         }
 
-        Button {
+        ProgressCircle { // 登录过程中显示进度圈
+            id: login_progress
+            anchors.centerIn: login_button
+            visible: false
+        }
+
+        Button { // 登录按钮
+            id: login_button
             anchors {
                 bottom: parent.bottom
                 bottomMargin: 32
@@ -134,7 +151,13 @@ Page {
             backgroundColor: Theme.accentColor
 
             enabled: input_is_valid()
-            onClicked: console.log("done!")
+            onClicked: {
+                login_button.visible = false;
+                login_progress.visible = true;
+                request.url = "http://192.168.1.41:8893/login";
+                request.jsonData = JSON.stringify({ 'username': username.text, 'password': password.text });
+                request.sendJson();
+            }
 
             function input_is_valid() {
                 return username.text !== "" && password.text !== "";
@@ -163,7 +186,7 @@ Page {
         }
     }
 
-    Row {
+    Row { // 右下按钮栏
         anchors {
             bottom: parent.bottom
             bottomMargin: 32
@@ -203,7 +226,7 @@ Page {
         }
     }
 
-    Row {
+    Row { // 左下按钮栏
         anchors {
             bottom: parent.bottom
             bottomMargin: 32
@@ -226,5 +249,34 @@ Page {
             color: Theme.light.iconColor
             onClicked: pageStack.push(Qt.resolvedUrl("SettingPage.qml"))
         }
+    }
+
+    Snackbar { // 通知栏
+        id: prompt
+    }
+
+    Request {
+        id: request
+        onResponseChanged: {
+            var code = request.code;
+            var response = request.response;
+
+            login_progress.visible = false;
+            login_button.visible = true;
+
+            if (code === 401) {
+                username.hasError = true;
+                password.hasError = true;
+                password.helperText = "用户名或密码错误";
+            } else if (code === 500) {
+                prompt.open("服务暂时不可用")
+            } else if (code === 200) {
+                prompt.open("登录成功")
+                // TODO: 处理成功登录
+            } else {
+                prompt.open("连接服务器失败")
+            }
+        }
+
     }
 }
