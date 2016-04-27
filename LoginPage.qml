@@ -214,9 +214,6 @@ Page {
             size: 32
             hoverAnimation: true
             color: Theme.light.iconColor
-            onClicked: {
-                pageStack.push(Qt.resolvedUrl("DesktopPage.qml"))
-            }
         }
 
         IconButton {
