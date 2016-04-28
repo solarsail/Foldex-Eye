@@ -21,6 +21,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<HTTPRequest>("com.evercloud.http", 0, 1, "Request");
 
     QGuiApplication app(argc, argv);
+    QFont msyh_light("微软雅黑 Light");
+    app.setFont(msyh_light);
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
