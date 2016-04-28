@@ -6,6 +6,13 @@ Page {
     id: settingpage
     title: "设置"
 
+    backAction: Action {
+        text: "返回"
+        iconName: "navigation/arrow_back"
+        onTriggered: settingpage.pop()
+        visible: canGoBack
+    }
+
     rightSidebar: PageSidebar {
         title: "选项"
 
