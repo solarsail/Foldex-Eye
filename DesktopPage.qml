@@ -8,6 +8,8 @@ import com.evercloud.http 0.1
 Page {
     id: desktop_selection
 
+    property bool heartbeat_error: false
+
     Component.onCompleted: {
         parse_info();
         heartbeat.startSending(UserConnection.token);
@@ -69,8 +71,13 @@ Page {
 
         onFinished: {
             var code = rdp.status();
-            if (code !== 0)
+            if (code !== 0) {
                 prompt.open("连接错误：" + rdp.status())
+            }
+            if (desktop_selection.heartbeat_error) { // 心跳异常，需要重新登录
+                desktop_selection.pop();
+            }
+
             heartbeat.startSending(UserConnection.token);
         }
     }
@@ -97,10 +104,9 @@ Page {
     HeartBeat {
         id: heartbeat
         url: "http://192.168.1.41:8893/heartbeat"
-        onError: {
+        onError: { // 心跳异常
             heartbeat.stop();
-            rdp.kill();
-            desktop_selection.pop();
+            desktop_selection.heartbeat_error = true;
         }
     }
 
