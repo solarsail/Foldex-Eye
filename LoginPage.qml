@@ -1,6 +1,7 @@
 import QtQuick 2.4
 import Material 0.2
 import com.evercloud.http 0.1
+import com.evercloud.conn 0.1
 
 Page {
     actionBar.hidden: true
@@ -271,12 +272,14 @@ Page {
             } else if (code === 500) {
                 prompt.open("服务暂时不可用")
             } else if (code === 200) {
-                prompt.open("登录成功")
-                // TODO: 处理成功登录
+                UserConnection.username = username.text;
+                UserConnection.password = password.text;
+                UserConnection.info = response;
+                pageStack.push(Qt.resolvedUrl("DesktopPage.qml"));
             } else {
                 prompt.open("连接服务器失败")
             }
         }
-
     }
+
 }

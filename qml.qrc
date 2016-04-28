@@ -3,5 +3,6 @@
         <file>main.qml</file>
         <file>LoginPage.qml</file>
         <file>SettingPage.qml</file>
+        <file>DesktopPage.qml</file>
     </qresource>
 </RCC>
