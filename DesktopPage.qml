@@ -8,6 +8,13 @@ import com.evercloud.http 0.1
 Page {
     id: desktop_selection
 
+    backAction: Action {
+        text: "返回"
+        iconName: "navigation/arrow_back"
+        onTriggered: desktop_selection.pop()
+        visible: canGoBack
+    }
+
     property bool heartbeat_error: false
 
     Component.onCompleted: {
