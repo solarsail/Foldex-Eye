@@ -41,7 +41,6 @@ Page {
                 text: "登录"
 
                 color: "white"
-                font.family: "微软雅黑 Light"
                 font.pixelSize: 48
 
                 anchors {
@@ -58,7 +57,6 @@ Page {
 
             placeholderText: "用户名"
             floatingLabel: true
-            font.family: "微软雅黑 Light"
             font.pixelSize: 24
 
             onTextChanged: {
@@ -79,7 +77,6 @@ Page {
             placeholderText: "密码"
             floatingLabel: true
             echoMode: TextInput.Password
-            font.family: "微软雅黑 Light"
             font.pixelSize: 24
 
             onTextChanged: {
@@ -111,7 +108,6 @@ Page {
 
             Label {
                 text: "记住用户名"
-                font.family: "微软雅黑 Light"
                 anchors.verticalCenter: keep_username.verticalCenter
             }
 
@@ -129,7 +125,6 @@ Page {
 
             Label {
                 text: "记住密码"
-                font.family: "微软雅黑 Light"
                 anchors.verticalCenter: keep_password.verticalCenter
             }
         }

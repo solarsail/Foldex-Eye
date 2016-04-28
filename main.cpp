@@ -37,6 +37,8 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonType("com.evercloud.conn", 0, 1, "UserConnection", conn_singleton_provider);
 
     QGuiApplication app(argc, argv);
+    QFont msyh_light("微软雅黑 Light");
+    app.setFont(msyh_light);
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
