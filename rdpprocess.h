@@ -34,6 +34,7 @@ public:
 
 
 public slots:
+    Q_INVOKABLE void kill();
     void setUsername(QString username);
     void setPassword(QString password);
     void setHost(QString host);

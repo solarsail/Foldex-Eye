@@ -34,6 +34,11 @@ QString RDPProcess::errorCode() const
     return this->errorString();
 }
 
+void RDPProcess::kill()
+{
+    QProcess::kill();
+}
+
 QString RDPProcess::username() const
 {
     return _username;
