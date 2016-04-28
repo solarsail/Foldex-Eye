@@ -1,0 +1,37 @@
+From 58accf3994ee00692c84962f9dcdcebc6086217d Mon Sep 17 00:00:00 2001
+From: solarsail <newleaf.lu@gmail.com>
+Date: Thu, 28 Apr 2016 15:41:50 +0800
+Subject: [PATCH] unset default font (previously Roboco)
+
+---
+ modules/Material/Label.qml                                  | 1 -
+ modules/QtQuick/Controls/Styles/Material/TextFieldStyle.qml | 1 -
+ 2 files changed, 2 deletions(-)
+
+diff --git a/modules/Material/Label.qml b/modules/Material/Label.qml
+index f120a8c..23f5c95 100644
+--- a/modules/Material/Label.qml
++++ b/modules/Material/Label.qml
+@@ -110,7 +110,6 @@ Text {
+ 
+     font.pixelSize: Units.dp(!Device.isMobile && fontInfo.size_desktop 
+             ? fontInfo.size_desktop : fontInfo.size)
+-    font.family: "Roboto"
+     font.weight: {
+         var weight = fontInfo.font
+ 
+diff --git a/modules/QtQuick/Controls/Styles/Material/TextFieldStyle.qml b/modules/QtQuick/Controls/Styles/Material/TextFieldStyle.qml
+index af47687..4131e54 100644
+--- a/modules/QtQuick/Controls/Styles/Material/TextFieldStyle.qml
++++ b/modules/QtQuick/Controls/Styles/Material/TextFieldStyle.qml
+@@ -32,7 +32,6 @@ TextFieldStyle {
+     }
+ 
+     font {
+-        family: echoMode == TextInput.Password ? "Default" : "Roboto"
+         pixelSize: Units.dp(16)
+     }
+ 
+-- 
+2.7.1.windows.2
+
