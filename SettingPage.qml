@@ -1,6 +1,7 @@
 import QtQuick 2.4
 import Material 0.2
 import Material.ListItems 0.1 as ListItem
+import QtQml 2.2
 
 Page {
     id: settingpage
@@ -13,11 +14,56 @@ Page {
         visible: canGoBack
     }
 
-    rightSidebar: PageSidebar {
-        title: "选项"
+    property int selectedComponent: 0
+    property var settingName: [{
+            name: "网络设置",
+            url: "network.qml"
+        }, {
+            name: "服务器配置",
+            url: "server.qml"
+        }, {
+            name: "协议配置",
+            url: "protocol.qml"
+        }]
 
+    Sidebar {
+        id: settingside
         width: Units.dp(320)
+        Column {
+            width: parent.width
+            spacing: 2
 
+            Repeater {
+                model: settingName
+                delegate: ListItem.Standard {
+                    text: settingName[index].name
+                    selected: index == settingpage.selectedComponent
+                    onClicked: {
+                        settingpage.selectedComponent = index
+                        console.log(settingName[index].url)
+                    }
+                }
+            }
+        }
+    }
+
+    Item {
+        id: flickable
+        anchors {
+            left: settingside.right
+            right: parent.right
+            top: parent.top
+            bottom: parent.bottom
+        }
+        Loader {
+            id: example
+            anchors.fill: parent
+            asynchronous: true
+            visible: status == Loader.Ready
+            // selectedComponent will always be valid, as it defaults to the first component
+            source: {
+                return Qt.resolvedUrl(("%1%2").arg("settingPage/").arg(settingName[settingpage.selectedComponent].url))
+            }
+        }
     }
 }
-
