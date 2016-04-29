@@ -60,7 +60,6 @@ Page {
             anchors.fill: parent
             asynchronous: true
             visible: status == Loader.Ready
-            // selectedComponent will always be valid, as it defaults to the first component
             source: {
                 return Qt.resolvedUrl(("%1%2").arg("settingPage/").arg(settingName[settingpage.selectedComponent].url))
             }
