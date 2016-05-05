@@ -51,9 +51,11 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
+#ifndef QT_DEBUG
     QWindowList windows = QGuiApplication::topLevelWindows();
     QWindow *main_window = windows[0];
     main_window->showFullScreen();
+#endif // QT_DEBUG
 
     return app.exec();
 }
