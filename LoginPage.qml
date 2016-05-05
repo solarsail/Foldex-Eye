@@ -179,14 +179,6 @@ Page {
                 request.url = "http://192.168.1.41:8893/login";
                 request.jsonData = JSON.stringify({ 'username': username.text, 'password': password.text });
                 request.sendJson();
-                //保存当前用户名或密码逻辑
-                if((keep_username.checked == true)&&(keep_password.checked == false)){
-                    usersetting.storeUser(username.text,'');
-                }else if((keep_username.checked == true)&&(keep_password.checked == true)){
-                    usersetting.storeUser(username.text,password.text)
-                }else if(keep_username.checked == false){
-                    usersetting.storeUser('','')
-                }
             }
 
             function input_is_valid() {
@@ -212,6 +204,14 @@ Page {
         negativeButtonText: "取消"
 
         onAccepted: {
+            //保存当前用户名或密码逻辑
+            if((keep_username.checked == true)&&(keep_password.checked == false)){
+                usersetting.storeUser(username.text,'');
+            }else if((keep_username.checked == true)&&(keep_password.checked == true)){
+                usersetting.storeUser(username.text,password.text)
+            }else if(keep_username.checked == false){
+                usersetting.storeUser('','')
+            }
             Qt.quit()
         }
     }
