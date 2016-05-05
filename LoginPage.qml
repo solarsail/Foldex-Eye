@@ -2,9 +2,14 @@ import QtQuick 2.4
 import Material 0.2
 import com.evercloud.http 0.1
 import com.evercloud.conn 0.1
+import "./settingPage"
 
 Page {
     actionBar.hidden: true
+
+    Settingstore {
+        id: usersetting
+    }
 
     View { // 背景卡片
         radius: 3
@@ -104,6 +109,14 @@ Page {
             Switch {
                 id: keep_username
                 checked: false
+                onCheckedChanged: function(){
+                    if(keep_username.checked == true){
+                       keep_password.enabled = true;
+                    } else {
+                        keep_password.checked = false;
+                       keep_password.enabled = false;
+                    }
+                }
             }
 
             Label {
@@ -119,6 +132,7 @@ Page {
             }
 
             Switch {
+                enabled: false
                 id: keep_password
                 checked: false
             }
@@ -126,6 +140,18 @@ Page {
             Label {
                 text: "记住密码"
                 anchors.verticalCenter: keep_password.verticalCenter
+            }
+
+            Component.onCompleted:{
+                if(usersetting.user !== ''){
+                    username.text = usersetting.user;
+                    keep_username.checked = true;
+                }
+
+                if(usersetting.passwd !== ''){
+                    password.text = usersetting.passwd;
+                    keep_password.checked = true;
+                }
             }
         }
 
@@ -153,6 +179,14 @@ Page {
                 request.url = "http://192.168.1.41:8893/login";
                 request.jsonData = JSON.stringify({ 'username': username.text, 'password': password.text });
                 request.sendJson();
+                //保存当前用户名或密码逻辑
+                if((keep_username.checked == true)&&(keep_password.checked == false)){
+                    usersetting.storeUser(username.text,'');
+                }else if((keep_username.checked == true)&&(keep_password.checked == true)){
+                    usersetting.storeUser(username.text,password.text)
+                }else if(keep_username.checked == false){
+                    usersetting.storeUser('','')
+                }
             }
 
             function input_is_valid() {

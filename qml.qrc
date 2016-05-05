@@ -7,5 +7,6 @@
         <file>settingPage/network.qml</file>
         <file>settingPage/protocol.qml</file>
         <file>settingPage/server.qml</file>
+        <file>settingPage/Settingstore.qml</file>
     </qresource>
 </RCC>
