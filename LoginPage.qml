@@ -69,6 +69,13 @@ Page {
 
             onTextChanged: {
                 username.hasError = false
+
+                if (username.text === "") {
+                    keep_username.checked = false
+                    keep_username.enabled = false
+                } else {
+                    keep_username.enabled = true
+                }
             }
 
             width: 300
@@ -137,7 +144,6 @@ Page {
             }
 
             Switch {
-                enabled: false
                 id: keep_password
                 checked: true
             }
@@ -156,10 +162,8 @@ Page {
 
                 if (usersetting.passwd !== '') {
                     password.text = usersetting.passwd
-                    keep_password.enabled = true
                     keep_password.checked = true
                 } else {
-                    keep_password.enabled = false
                     keep_password.checked = false
                 }
             }
@@ -226,6 +230,7 @@ Page {
             } else if ((keep_username.checked == true)
                        && (keep_password.checked == true)
                        && (username.text !== '')) {
+
                 usersetting.storeUser(username.text, password.text)
             } else if (keep_username.checked == false) {
                 usersetting.storeUser('', '')
