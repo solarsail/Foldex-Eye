@@ -142,7 +142,7 @@ Page {
 
             Switch {
                 id: keep_password
-                enabled: username.text !== "" && keep_username.checked
+                enabled: password.text !== "" && keep_username.checked
                 checked: true
             }
 
