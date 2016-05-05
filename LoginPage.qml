@@ -68,13 +68,9 @@ Page {
             font.pixelSize: 24
 
             onTextChanged: {
-                username.hasError = false
-
+                username.hasError = false;
                 if (username.text === "") {
                     keep_username.checked = false
-                    keep_username.enabled = false
-                } else {
-                    keep_username.enabled = true
                 }
             }
 
@@ -96,8 +92,11 @@ Page {
             font.pixelSize: 24
 
             onTextChanged: {
-                password.hasError = false
-                password.helperText = ""
+                password.hasError = false;
+                password.helperText = "";
+                if (password.text === "") {
+                    keep_password.checked = false
+                }
             }
 
             width: 300
@@ -120,13 +119,11 @@ Page {
 
             Switch {
                 id: keep_username
+                enabled: username.text !== ""
                 checked: true
                 onCheckedChanged: function () {
-                    if (keep_username.checked == true) {
-                        keep_password.enabled = true
-                    } else {
+                    if (keep_username.checked == false) {
                         keep_password.checked = false
-                        keep_password.enabled = false
                     }
                 }
             }
@@ -145,6 +142,7 @@ Page {
 
             Switch {
                 id: keep_password
+                enabled: username.text !== "" && keep_username.checked
                 checked: true
             }
 
