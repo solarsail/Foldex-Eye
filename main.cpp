@@ -44,6 +44,10 @@ int main(int argc, char *argv[])
     QFont msyh_light("微软雅黑 Light");
     app.setFont(msyh_light);
 
+    app.setOrganizationName("HY");
+    app.setOrganizationDomain("HY.com");
+    app.setApplicationName("cloud-Client");
+
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
