@@ -108,7 +108,7 @@ Page {
 
             Switch {
                 id: keep_username
-                checked: false
+                checked: true
                 onCheckedChanged: function(){
                     if(keep_username.checked == true){
                        keep_password.enabled = true;
@@ -134,25 +134,31 @@ Page {
             Switch {
                 enabled: false
                 id: keep_password
-                checked: false
+                checked: true
             }
 
             Label {
                 text: "记住密码"
                 anchors.verticalCenter: keep_password.verticalCenter
             }
-
             Component.onCompleted:{
                 if(usersetting.user !== ''){
                     username.text = usersetting.user;
                     keep_username.checked = true;
+                }else{
+                    keep_username.checked = false;
                 }
 
                 if(usersetting.passwd !== ''){
                     password.text = usersetting.passwd;
+                    keep_password.enabled = true;
                     keep_password.checked = true;
+                }else{
+                    keep_password.enabled = false;
+                    keep_password.checked = false;
                 }
             }
+
         }
 
         ProgressCircle { // 登录过程中显示进度圈
