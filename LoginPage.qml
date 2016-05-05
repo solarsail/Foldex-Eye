@@ -11,7 +11,8 @@ Page {
         id: usersetting
     }
 
-    View { // 背景卡片
+    View {
+        // 背景卡片
         radius: 3
         width: 400
         height: 500
@@ -19,7 +20,8 @@ Page {
         backgroundColor: "white"
         anchors.centerIn: parent
 
-        View { // 标题板
+        View {
+            // 标题板
             id: caption
 
             width: parent.width
@@ -57,7 +59,8 @@ Page {
             }
         }
 
-        TextField { // 用户名输入框
+        TextField {
+            // 用户名输入框
             id: username
 
             placeholderText: "用户名"
@@ -76,7 +79,8 @@ Page {
             }
         }
 
-        TextField { // 密码输入框
+        TextField {
+            // 密码输入框
             id: password
 
             placeholderText: "密码"
@@ -97,7 +101,8 @@ Page {
             }
         }
 
-        Row { // 开关栏
+        Row {
+            // 开关栏
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 top: password.bottom
@@ -109,12 +114,12 @@ Page {
             Switch {
                 id: keep_username
                 checked: true
-                onCheckedChanged: function(){
-                    if(keep_username.checked == true){
-                       keep_password.enabled = true;
+                onCheckedChanged: function () {
+                    if (keep_username.checked == true) {
+                        keep_password.enabled = true
                     } else {
-                        keep_password.checked = false;
-                       keep_password.enabled = false;
+                        keep_password.checked = false
+                        keep_password.enabled = false
                     }
                 }
             }
@@ -141,33 +146,34 @@ Page {
                 text: "记住密码"
                 anchors.verticalCenter: keep_password.verticalCenter
             }
-            Component.onCompleted:{
-                if(usersetting.user !== ''){
-                    username.text = usersetting.user;
-                    keep_username.checked = true;
-                }else{
-                    keep_username.checked = false;
+            Component.onCompleted: {
+                if (usersetting.user !== '') {
+                    username.text = usersetting.user
+                    keep_username.checked = true
+                } else {
+                    keep_username.checked = false
                 }
 
-                if(usersetting.passwd !== ''){
-                    password.text = usersetting.passwd;
-                    keep_password.enabled = true;
-                    keep_password.checked = true;
-                }else{
-                    keep_password.enabled = false;
-                    keep_password.checked = false;
+                if (usersetting.passwd !== '') {
+                    password.text = usersetting.passwd
+                    keep_password.enabled = true
+                    keep_password.checked = true
+                } else {
+                    keep_password.enabled = false
+                    keep_password.checked = false
                 }
             }
-
         }
 
-        ProgressCircle { // 登录过程中显示进度圈
+        ProgressCircle {
+            // 登录过程中显示进度圈
             id: login_progress
             anchors.centerIn: login_button
             visible: false
         }
 
-        Button { // 登录按钮
+        Button {
+            // 登录按钮
             id: login_button
             anchors {
                 bottom: parent.bottom
@@ -180,15 +186,18 @@ Page {
 
             enabled: input_is_valid()
             onClicked: {
-                login_button.visible = false;
-                login_progress.visible = true;
-                request.url = "http://192.168.1.41:8893/login";
-                request.jsonData = JSON.stringify({ 'username': username.text, 'password': password.text });
-                request.sendJson();
+                login_button.visible = false
+                login_progress.visible = true
+                request.url = "http://192.168.1.41:8893/login"
+                request.jsonData = JSON.stringify({
+                                                      username: username.text,
+                                                      password: password.text
+                                                  })
+                request.sendJson()
             }
 
             function input_is_valid() {
-                return username.text !== "" && password.text !== "";
+                return username.text !== "" && password.text !== ""
             }
 
             Icon {
@@ -211,18 +220,22 @@ Page {
 
         onAccepted: {
             //保存当前用户名或密码逻辑
-            if((keep_username.checked == true)&&(keep_password.checked == false)){
-                usersetting.storeUser(username.text,'');
-            }else if((keep_username.checked == true)&&(keep_password.checked == true)){
-                usersetting.storeUser(username.text,password.text)
-            }else if(keep_username.checked == false){
-                usersetting.storeUser('','')
+            if ((keep_username.checked == true)
+                    && (keep_password.checked == false)) {
+                usersetting.storeUser(username.text, '')
+            } else if ((keep_username.checked == true)
+                       && (keep_password.checked == true)
+                       && (username.text !== '')) {
+                usersetting.storeUser(username.text, password.text)
+            } else if (keep_username.checked == false) {
+                usersetting.storeUser('', '')
             }
             Qt.quit()
         }
     }
 
-    Row { // 右下按钮栏
+    Row {
+        // 右下按钮栏
         anchors {
             bottom: parent.bottom
             bottomMargin: 32
@@ -262,7 +275,8 @@ Page {
         }
     }
 
-    Row { // 左下按钮栏
+    Row {
+        // 左下按钮栏
         anchors {
             bottom: parent.bottom
             bottomMargin: 32
@@ -287,34 +301,34 @@ Page {
         }
     }
 
-    Snackbar { // 通知栏
+    Snackbar {
+        // 通知栏
         id: prompt
     }
 
     Request {
         id: request
         onResponseChanged: {
-            var code = request.code;
-            var response = request.response;
+            var code = request.code
+            var response = request.response
 
-            login_progress.visible = false;
-            login_button.visible = true;
+            login_progress.visible = false
+            login_button.visible = true
 
             if (code === 401) {
-                username.hasError = true;
-                password.hasError = true;
-                password.helperText = "用户名或密码错误";
+                username.hasError = true
+                password.hasError = true
+                password.helperText = "用户名或密码错误"
             } else if (code === 500) {
                 prompt.open("服务暂时不可用")
             } else if (code === 200) {
-                UserConnection.username = username.text;
-                UserConnection.password = password.text;
-                UserConnection.info = response;
-                pageStack.push(Qt.resolvedUrl("DesktopPage.qml"));
+                UserConnection.username = username.text
+                UserConnection.password = password.text
+                UserConnection.info = response
+                pageStack.push(Qt.resolvedUrl("DesktopPage.qml"))
             } else {
                 prompt.open("连接服务器失败")
             }
         }
     }
-
 }
