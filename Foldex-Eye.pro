@@ -6,7 +6,8 @@ CONFIG += c++11
 SOURCES += main.cpp \
     httprequest.cpp \
     rdpprocess.cpp \
-    heartbeat.cpp
+    heartbeat.cpp \
+    systempower.cpp
 
 RESOURCES += qml.qrc
 
@@ -19,7 +20,8 @@ include(deployment.pri)
 HEADERS += \
     httprequest.h \
     rdpprocess.h \
-    heartbeat.h
+    heartbeat.h \
+    systempower.h
 
 isEmpty(TARGET_EXT) {
     win32 {
