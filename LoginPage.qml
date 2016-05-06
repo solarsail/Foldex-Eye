@@ -2,6 +2,7 @@ import QtQuick 2.4
 import Material 0.2
 import com.evercloud.http 0.1
 import com.evercloud.conn 0.1
+import com.evercloud.sys 0.1
 import "./settingPage"
 
 Page {
@@ -214,8 +215,9 @@ Page {
 
     Dialog {
         id: shutDownDialog
+        property string powerAction: "shutdown"
         width: Units.dp(300)
-        text: "确定要关机吗?"
+        text: "确定要关机吗？"
         hasActions: true
         positiveButtonText: "确定"
         negativeButtonText: "取消"
@@ -233,7 +235,15 @@ Page {
             } else if (keep_username.checked == false) {
                 usersetting.storeUser('', '')
             }
-            Qt.quit()
+
+            if (powerAction === "shutdown") {
+                sys.shutdown();
+            } else if (powerAction === "reboot") {
+                sys.reboot();
+            } else {
+                console.log("unknown power action");
+            }
+
         }
     }
 
@@ -265,6 +275,11 @@ Page {
             size: 32
             hoverAnimation: true
             color: Theme.light.iconColor
+            onClicked: {
+                shutDownDialog.powerAction = "reboot";
+                shutDownDialog.text = "确定要重启吗？"
+                shutDownDialog.show()
+            }
         }
 
         IconButton {
@@ -273,6 +288,8 @@ Page {
             color: Theme.light.iconColor
             hoverAnimation: true
             onClicked: {
+                shutDownDialog.powerAction = "shutdown";
+                shutDownDialog.text = "确定要关机吗？"
                 shutDownDialog.show()
             }
         }
@@ -333,5 +350,9 @@ Page {
                 prompt.open("连接服务器失败")
             }
         }
+    }
+
+    SystemPower {
+        id: sys
     }
 }
