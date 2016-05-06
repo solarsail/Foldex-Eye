@@ -188,18 +188,18 @@ Page {
 
             enabled: input_is_valid()
             onClicked: {
-                login_button.visible = false
-                login_progress.visible = true
-                request.url = "http://192.168.1.41:8893/login"
+                login_button.visible = false;
+                login_progress.visible = true;
+                request.url = "http://192.168.1.41:8893/login";
                 request.jsonData = JSON.stringify({
                                                       username: username.text,
                                                       password: password.text
-                                                  })
-                request.sendJson()
+                                                  });
+                request.sendJson();
             }
 
             function input_is_valid() {
-                return username.text !== "" && password.text !== ""
+                return username.text !== "" && password.text !== "";
             }
 
             Icon {
@@ -228,7 +228,6 @@ Page {
             } else if ((keep_username.checked == true)
                        && (keep_password.checked == true)
                        && (username.text !== '')) {
-
                 usersetting.storeUser(username.text, password.text)
             } else if (keep_username.checked == false) {
                 usersetting.storeUser('', '')
@@ -312,25 +311,32 @@ Page {
     Request {
         id: request
         onResponseChanged: {
-            var code = request.code
-            var response = request.response
+            var code = request.code;
+            var response = request.response;
 
-            login_progress.visible = false
-            login_button.visible = true
+            login_progress.visible = false;
+            login_button.visible = true;
 
             if (code === 401) {
-                username.hasError = true
-                password.hasError = true
-                password.helperText = "用户名或密码错误"
+                username.hasError = true;
+                password.hasError = true;
+                password.helperText = "用户名或密码错误";
             } else if (code === 500) {
-                prompt.open("服务暂时不可用")
+                prompt.open("服务暂时不可用");
             } else if (code === 200) {
-                UserConnection.username = username.text
-                UserConnection.password = password.text
-                UserConnection.info = response
-                pageStack.push(Qt.resolvedUrl("DesktopPage.qml"))
+                UserConnection.username = username.text;
+                UserConnection.password = password.text;
+                UserConnection.info = response;
+                if (!keep_username.checked) {
+                    username.text = "";
+                }
+                if (!keep_password.checked) {
+                    password.text = "";
+                }
+
+                pageStack.push(Qt.resolvedUrl("DesktopPage.qml"));
             } else {
-                prompt.open("连接服务器失败")
+                prompt.open("连接服务器失败");
             }
         }
     }
