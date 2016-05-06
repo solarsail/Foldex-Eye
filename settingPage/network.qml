@@ -15,6 +15,7 @@ Item {
         elevation: 1
         radius: Units.dp(2)
 
+
         ColumnLayout {
             id: column
 
@@ -45,9 +46,22 @@ Item {
             }
 
             CheckBox {
-                checked: false
+                id: ipcheck
+                checked: true
                 text: "IP DHCP 自动设置"
                 darkBackground: false
+                onCheckedChanged:{
+                    if(ipcheck.checked == false){
+                        ipfield.enabled = true;
+                        submaskfield.enabled = true;
+                        gatewayfield.enabled = true;
+                    } else {
+                        ipfield.enabled = false;
+                        submaskfield.enabled = false;
+                        gatewayfield.enabled = false;
+                    }
+
+                }
             }
 
             RowLayout {
@@ -58,7 +72,8 @@ Item {
                     text: "IP 地址   ："
                 }
                 TextField{
-                    anchors.margins: parent.right
+                    id: ipfield
+                    enabled: false
                     floatingLabel: true
                     characterLimit: 15
                 }
@@ -71,6 +86,8 @@ Item {
                     text: "子网掩码："
                 }
                 TextField{
+                    id: submaskfield
+                    enabled: false
                     floatingLabel: true
                     characterLimit: 15
                 }
@@ -83,15 +100,27 @@ Item {
                     text: "默认网关："
                 }
                 TextField{
+                    id: gatewayfield
+                    enabled: false
                     floatingLabel: true
                     characterLimit: 15
                 }
             }
 
             CheckBox {
-                checked: false
+                id: dnscheck
+                checked: true
                 text: "DNS DHCP 自动设置"
                 darkBackground: false
+                onCheckedChanged:{
+                    if(dnscheck.checked == true){
+                        firstdns.enabled = false;
+                        seconddns.enabled = false;
+                    }else{
+                        firstdns.enabled = true;
+                        seconddns.enabled = true;
+                    }
+                }
             }
 
             RowLayout {
@@ -102,6 +131,8 @@ Item {
                     text: "首选 DNS 地址："
                 }
                 TextField{
+                    id: firstdns
+                    enabled: false
                     floatingLabel: true
                     characterLimit: 15
                 }
@@ -115,6 +146,8 @@ Item {
                     text: "备用 DNS 地址："
                 }
                 TextField{
+                    id: seconddns
+                    enabled: false
                     floatingLabel: true
                     characterLimit: 15
                 }

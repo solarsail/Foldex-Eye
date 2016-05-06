@@ -53,7 +53,6 @@ Item {
                     text: "服务器 IP 地址："
                 }
                 TextField{
-                    anchors.margins: parent.right
                     floatingLabel: true
                     characterLimit: 15
                 }
