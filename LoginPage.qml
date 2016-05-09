@@ -9,7 +9,7 @@ Page {
     actionBar.hidden: true
 
     Settingstore {
-        id: usersetting
+        id: settings
     }
 
     View {
@@ -152,15 +152,15 @@ Page {
                 anchors.verticalCenter: keep_password.verticalCenter
             }
             Component.onCompleted: {
-                if (usersetting.user !== '') {
-                    username.text = usersetting.user
+                if (settings.user !== '') {
+                    username.text = settings.user
                     keep_username.checked = true
                 } else {
                     keep_username.checked = false
                 }
 
-                if (usersetting.passwd !== '') {
-                    password.text = usersetting.passwd
+                if (settings.passwd !== '') {
+                    password.text = settings.passwd
                     keep_password.checked = true
                 } else {
                     keep_password.checked = false
@@ -191,7 +191,7 @@ Page {
             onClicked: {
                 login_button.visible = false;
                 login_progress.visible = true;
-                request.url = "http://192.168.1.41:8893/login";
+                request.url = "http://" + settings.server + ":8893/login";
                 request.jsonData = JSON.stringify({
                                                       username: username.text,
                                                       password: password.text
@@ -226,13 +226,13 @@ Page {
             //保存当前用户名或密码逻辑
             if ((keep_username.checked == true)
                     && (keep_password.checked == false)) {
-                usersetting.storeUser(username.text, '')
+                settings.storeUser(username.text, '')
             } else if ((keep_username.checked == true)
                        && (keep_password.checked == true)
                        && (username.text !== '')) {
-                usersetting.storeUser(username.text, password.text)
+                settings.storeUser(username.text, password.text)
             } else if (keep_username.checked == false) {
-                usersetting.storeUser('', '')
+                settings.storeUser('', '')
             }
 
             if (powerAction === "shutdown") {

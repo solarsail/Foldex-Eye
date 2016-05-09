@@ -4,10 +4,15 @@ Settings {
     id: settingConf
     property string user: ""
     property string passwd: ""
+    property string server: ""
 
     function storeUser(username,password){
         settingConf.user = username;
         settingConf.passwd = password;
         console.log(username);
+    }
+
+    function storeServer(server) {
+        settingConf.server = server;
     }
 }

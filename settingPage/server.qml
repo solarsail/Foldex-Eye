@@ -5,6 +5,10 @@ import QtQuick.Layouts 1.1
 import Material.ListItems 0.1 as ListItem
 
 Item {
+    Settingstore {
+        id: serversetting
+    }
+
     View {
         anchors.centerIn: parent
 
@@ -53,8 +57,10 @@ Item {
                     text: "服务器 IP 地址："
                 }
                 TextField{
+                    id: serverfield
                     floatingLabel: true
                     characterLimit: 15
+                    text: serversetting.server
                 }
             }
 
@@ -79,6 +85,7 @@ Item {
                     textColor: Theme.primaryColor
                     onClicked: {
                         //TODO: Save settings
+                        serversetting.storeServer(serverfield.text)
                         snackbar.open("保存成功")
                     }
                 }
