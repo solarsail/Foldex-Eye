@@ -4,6 +4,7 @@ import Material 0.2
 import com.evercloud.rdp 0.1
 import com.evercloud.conn 0.1
 import com.evercloud.http 0.1
+import "./settingPage"
 
 Page {
     id: desktop_selection
@@ -57,7 +58,7 @@ Page {
                 onClicked: {
                     UserConnection.currentHost = host;
                     UserConnection.currentVm = vm_id;
-                    request.url = "http://192.168.1.41:8893/conn";
+                    request.url = "http://" + serversetting.server + ":8893/conn";
                     request.jsonData = JSON.stringify({ 'token': token, 'vm_id': vm_id });
                     request.sendJson();
                 }
@@ -110,11 +111,15 @@ Page {
 
     HeartBeat {
         id: heartbeat
-        url: "http://192.168.1.41:8893/heartbeat"
+        url: "http://" + serversetting.server + ":8893/heartbeat"
         onError: { // 心跳异常
             heartbeat.stop();
             desktop_selection.heartbeat_error = true;
         }
+    }
+
+    Settingstore {
+        id: serversetting
     }
 
     Snackbar {
