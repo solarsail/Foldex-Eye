@@ -55,6 +55,7 @@ Item {
                         ipfield.enabled = true;
                         submaskfield.enabled = true;
                         gatewayfield.enabled = true;
+                        dnscheck.checked = false;
                     } else {
                         ipfield.enabled = false;
                         submaskfield.enabled = false;
