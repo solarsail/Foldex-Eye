@@ -55,6 +55,7 @@ Item {
                         ipfield.enabled = true;
                         submaskfield.enabled = true;
                         gatewayfield.enabled = true;
+                        dnscheck.checked = false;
                     } else {
                         ipfield.enabled = false;
                         submaskfield.enabled = false;
@@ -110,6 +111,7 @@ Item {
             CheckBox {
                 id: dnscheck
                 checked: true
+                enabled: ipcheck.checked
                 text: "DNS DHCP 自动设置"
                 darkBackground: false
                 onCheckedChanged:{
