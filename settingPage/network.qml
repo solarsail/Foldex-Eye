@@ -111,6 +111,7 @@ Item {
             CheckBox {
                 id: dnscheck
                 checked: true
+                enabled: ipcheck.checked
                 text: "DNS DHCP 自动设置"
                 darkBackground: false
                 onCheckedChanged:{
