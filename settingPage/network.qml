@@ -5,7 +5,9 @@ import QtQuick.Layouts 1.1
 import Material.ListItems 0.1 as ListItem
 
 Item {
-
+    Settingstore {
+        id: serversetting
+    }
     View {
         anchors.centerIn: parent
 
@@ -14,7 +16,6 @@ Item {
 
         elevation: 1
         radius: Units.dp(2)
-
 
         ColumnLayout {
             id: column
@@ -47,21 +48,20 @@ Item {
 
             CheckBox {
                 id: ipcheck
-                checked: true
+                checked: serversetting.ip == "" ? true : false
                 text: "IP DHCP 自动设置"
                 darkBackground: false
-                onCheckedChanged:{
-                    if(ipcheck.checked == false){
-                        ipfield.enabled = true;
-                        submaskfield.enabled = true;
-                        gatewayfield.enabled = true;
-                        dnscheck.checked = false;
+                onCheckedChanged: {
+                    if (ipcheck.checked == false) {
+                        ipfield.enabled = true
+                        submaskfield.enabled = true
+                        gatewayfield.enabled = true
+                        dnscheck.checked = false
                     } else {
-                        ipfield.enabled = false;
-                        submaskfield.enabled = false;
-                        gatewayfield.enabled = false;
+                        ipfield.enabled = false
+                        submaskfield.enabled = false
+                        gatewayfield.enabled = false
                     }
-
                 }
             }
 
@@ -69,12 +69,13 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 spacing: 16
-                Label{
+                Label {
                     text: "IP 地址   ："
                 }
-                TextField{
+                TextField {
                     id: ipfield
                     enabled: false
+                    text: serversetting.ip
                     floatingLabel: true
                     characterLimit: 15
                     validator: RegExpValidator {
@@ -86,12 +87,13 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 spacing: 16
-                Label{
+                Label {
                     text: "子网掩码："
                 }
-                TextField{
+                TextField {
                     id: submaskfield
                     enabled: false
+                    text: serversetting.mask
                     floatingLabel: true
                     characterLimit: 15
                     validator: RegExpValidator {
@@ -103,12 +105,13 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 spacing: 16
-                Label{
+                Label {
                     text: "默认网关："
                 }
-                TextField{
+                TextField {
                     id: gatewayfield
                     enabled: false
+                    text: serversetting.gateway
                     floatingLabel: true
                     characterLimit: 15
                     validator: RegExpValidator {
@@ -119,17 +122,17 @@ Item {
 
             CheckBox {
                 id: dnscheck
-                checked: true
+                checked: serversetting.mainDNS == "" ? true : false
                 enabled: ipcheck.checked
                 text: "DNS DHCP 自动设置"
                 darkBackground: false
-                onCheckedChanged:{
-                    if(dnscheck.checked == true){
-                        firstdns.enabled = false;
-                        seconddns.enabled = false;
-                    }else{
-                        firstdns.enabled = true;
-                        seconddns.enabled = true;
+                onCheckedChanged: {
+                    if (dnscheck.checked == true) {
+                        firstdns.enabled = false
+                        seconddns.enabled = false
+                    } else {
+                        firstdns.enabled = true
+                        seconddns.enabled = true
                     }
                 }
             }
@@ -138,12 +141,13 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 spacing: 16
-                Label{
+                Label {
                     text: "首选 DNS 地址："
                 }
-                TextField{
+                TextField {
                     id: firstdns
                     enabled: false
+                    text: serversetting.mainDNS
                     floatingLabel: true
                     characterLimit: 15
                     validator: RegExpValidator {
@@ -156,12 +160,13 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 spacing: 16
-                Label{
+                Label {
                     text: "备用 DNS 地址："
                 }
-                TextField{
+                TextField {
                     id: seconddns
                     enabled: false
+                    text: serversetting.secondDNS
                     floatingLabel: true
                     characterLimit: 15
                     validator: RegExpValidator {
@@ -187,9 +192,50 @@ Item {
                 Button {
                     text: "确定"
                     textColor: Theme.primaryColor
+
+                    function saveIP() {
+                        if ((ipfield.text == "") || (submaskfield.text == "")
+                                || (gatewayfield.text == "")) {
+                            snackbar.open("请输入正确的IP地址、子网掩码和默认网关")
+                            return false
+                        } else {
+                            serversetting.storeIP(ipfield.text,
+                                                  submaskfield.text,
+                                                  gatewayfield.text)
+                            return true
+                        }
+                    }
+
+                    function saveDNS() {
+                        if ((firstdns.text == "") || (seconddns.text == "")) {
+                            snackbar.open("请输入正确的DNS服务器地址")
+                            return false
+                        } else {
+                            serversetting.storeDNS(firstdns.text,
+                                                   seconddns.text)
+                            return true
+                        }
+                    }
+
                     onClicked: {
-                        //TODO: Save settings
-                        snackbar.open("保存成功")
+                        if ((ipcheck.checked == true)
+                                && (dnscheck.checked == true)) {
+                            //TODO: DHCP settings
+                            serversetting.storeIP("", "", "")
+                            serversetting.storeDNS("", "")
+                            snackbar.open("保存成功")
+                        } else if ((ipcheck.checked == true)
+                                   && (dnscheck.checked == false)) {
+                            serversetting.storeIP("", "", "")
+                            if (saveDNS() === true) {
+                                snackbar.open("DNS配置保存成功")
+                            }
+                        } else if ((ipcheck.checked == false)
+                                   && (dnscheck.checked == false)) {
+                            if ((saveDNS() === true) && saveIP() === true) {
+                                snackbar.open("手动配置保存成功")
+                            }
+                        }
                     }
                 }
             }
