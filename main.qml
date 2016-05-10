@@ -9,6 +9,10 @@ ApplicationWindow {
 
     visible: true
 
+    Component.onCompleted: {
+        Units.pixelDensity = 4.46
+    }
+
     theme {
         primaryColor: "blue"
         accentColor: Palette.colors["amber"]["700"]

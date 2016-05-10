@@ -11,6 +11,7 @@ void RDPProcess::start()
     QString program("wfreerdp.bin");
     //QString args;
     program.append(" /f")
+           .append(" /bpp:32")
            .append(" /u:").append(username())
            .append(" /p:").append(password())
            .append(" /v:").append(host());
