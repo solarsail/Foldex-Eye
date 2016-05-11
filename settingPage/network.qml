@@ -8,6 +8,11 @@ Item {
     Settingstore {
         id: serversetting
     }
+    RegExpValidator {
+        id: ipvalidator
+        regExp: /^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
+    }
+
     View {
         anchors.centerIn: parent
 
@@ -78,9 +83,7 @@ Item {
                     text: serversetting.ip
                     floatingLabel: true
                     characterLimit: 15
-                    validator: RegExpValidator {
-                        regExp: /^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
-                    }
+                    validator: ipvalidator
                 }
             }
             RowLayout {
@@ -96,9 +99,7 @@ Item {
                     text: serversetting.mask
                     floatingLabel: true
                     characterLimit: 15
-                    validator: RegExpValidator {
-                        regExp: /^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
-                    }
+                    validator: ipvalidator
                 }
             }
             RowLayout {
@@ -114,9 +115,7 @@ Item {
                     text: serversetting.gateway
                     floatingLabel: true
                     characterLimit: 15
-                    validator: RegExpValidator {
-                        regExp: /^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
-                    }
+                    validator: ipvalidator
                 }
             }
 
@@ -150,9 +149,7 @@ Item {
                     text: serversetting.mainDNS
                     floatingLabel: true
                     characterLimit: 15
-                    validator: RegExpValidator {
-                        regExp: /^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
-                    }
+                    validator: ipvalidator
                 }
             }
 
@@ -169,9 +166,7 @@ Item {
                     text: serversetting.secondDNS
                     floatingLabel: true
                     characterLimit: 15
-                    validator: RegExpValidator {
-                        regExp: /^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
-                    }
+                    validator: ipvalidator
                 }
             }
 
@@ -194,6 +189,9 @@ Item {
                     textColor: Theme.primaryColor
 
                     function saveIP() {
+                        if (!checkipvalidate()) {
+                            return false
+                        }
                         if ((ipfield.text == "") || (submaskfield.text == "")
                                 || (gatewayfield.text == "")) {
                             snackbar.open("请输入正确的IP地址、子网掩码和默认网关")
@@ -207,7 +205,10 @@ Item {
                     }
 
                     function saveDNS() {
-                        if ((firstdns.text == "") || (seconddns.text == "")) {
+                        if (!checkdnsvalidate()) {
+                            return false
+                        }
+                        if ((firstdns.text == "")) {
                             snackbar.open("请输入正确的DNS服务器地址")
                             return false
                         } else {
@@ -215,6 +216,47 @@ Item {
                                                    seconddns.text)
                             return true
                         }
+                    }
+
+                    function validateIPaddress(ipaddress) {
+                        if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+                                    ipaddress)) {
+                            return (true)
+                        }
+                        return (false)
+                    }
+
+                    function checkipvalidate() {
+                        if ((ipfield.text !== "") && (!validateIPaddress(
+                                                          ipfield.text))) {
+                            snackbar.open("IP地址输入错误，请重新输入")
+                            return false
+                        }
+                        if ((submaskfield.text !== "")
+                                && (!validateIPaddress(submaskfield.text))) {
+                            snackbar.open("子网掩码输入错误，请重新输入")
+                            return false
+                        }
+                        if ((gatewayfield.text !== "")
+                                && (!validateIPaddress(gatewayfield.text))) {
+                            snackbar.open("默认网关输入错误，请重新输入")
+                            return false
+                        }
+                        return true
+                    }
+
+                    function checkdnsvalidate() {
+                        if ((firstdns.text !== "") && (!validateIPaddress(
+                                                           firstdns.text))) {
+                            snackbar.open("首选DNS服务器地址输入错误，请重新输入")
+                            return false
+                        }
+                        if ((seconddns.text !== "") && (!validateIPaddress(
+                                                            seconddns.text))) {
+                            snackbar.open("备用DNS服务器地址输入错误，请重新输入")
+                            return false
+                        }
+                        return true
                     }
 
                     onClicked: {
