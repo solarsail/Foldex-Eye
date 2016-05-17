@@ -3,6 +3,7 @@ import Material 0.2
 import QtQuick.Controls 1.3 as Controls
 import QtQuick.Layouts 1.1
 import Material.ListItems 0.1 as ListItem
+import com.evercloud.sys 0.1
 
 Item {
 
@@ -189,7 +190,34 @@ Item {
                     textColor: Theme.primaryColor
                     onClicked: {
                         //TODO: Save settings
-                        snackbar.open("保存成功")
+                        var success = false;
+                        var wmiret = 0;
+                        var errstr = "";
+                        if (ipcheck.checked) {
+                            success = ipsettings.setAutoIp();
+                            errstr = "无法自动获取 IP 地址";
+                        } else {
+                            success = ipsettings.setStaticIp(ipfield.text, submaskfield.text, gatewayfield.text);
+                            errstr = "无法修改 IP 地址";
+                        }
+                        wmiret = ipsettings.wmiRetCode();
+                        if (!success || wmiret !== 0) {
+                            snackbar.open(errstr + "：" + wmiret);
+                            return;
+                        }
+
+                        if (dnscheck.checked) {
+                            success = ipsettings.setAutoDns();
+                            errstr = "无法自动获取 DNS";
+                        } else {
+                            success = ipsettings.setStaticDns(firstdns.text, seconddns.text);
+                            errstr = "无法修改 DNS";
+                        }
+                        wmiret = ipsettings.wmiRetCode();
+                        if (!success || wmiret !== 0) {
+                            snackbar.open(errstr + "：" + wmiret);
+                        } else
+                            snackbar.open("保存成功");
                     }
                 }
             }
@@ -198,5 +226,10 @@ Item {
 
     Snackbar {
         id: snackbar
+    }
+
+    IPSettings {
+        id: ipsettings
+        adapter: "vEthernet (wlan-vswitch)"
     }
 }

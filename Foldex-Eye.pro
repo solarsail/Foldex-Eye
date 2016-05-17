@@ -7,7 +7,8 @@ SOURCES += main.cpp \
     httprequest.cpp \
     rdpprocess.cpp \
     heartbeat.cpp \
-    systempower.cpp
+    systempower.cpp \
+    ipsettings.cpp
 
 RESOURCES += qml.qrc
 
@@ -21,7 +22,9 @@ HEADERS += \
     httprequest.h \
     rdpprocess.h \
     heartbeat.h \
-    systempower.h
+    systempower.h \
+    lib/adapter_config.h \
+    ipsettings.h
 
 isEmpty(TARGET_EXT) {
     win32 {
@@ -55,3 +58,14 @@ win32 {
 
 QMAKE_POST_LINK += $$DEPLOY_EXTRA $$EXTRA_DEPS $$DEPLOY_DIR
 #QMAKE_POST_LINK += & $$DEPLOY_DLL $$DEPLOY_TARGET
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -ladapter_config
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -ladapter_configd
+
+INCLUDEPATH += $$PWD/lib
+DEPENDPATH += $$PWD/lib
+
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/lib/libadapter_config.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/lib/libadapter_configd.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/lib/adapter_config.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/lib/adapter_configd.lib
