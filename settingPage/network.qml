@@ -6,6 +6,13 @@ import Material.ListItems 0.1 as ListItem
 import com.evercloud.sys 0.1
 
 Item {
+    Settingstore {
+        id: serversetting
+    }
+    RegExpValidator {
+        id: ipvalidator
+        regExp: /^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
+    }
 
     View {
         anchors.centerIn: parent
@@ -15,7 +22,6 @@ Item {
 
         elevation: 1
         radius: Units.dp(2)
-
 
         ColumnLayout {
             id: column
@@ -48,21 +54,20 @@ Item {
 
             CheckBox {
                 id: ipcheck
-                checked: true
+                checked: serversetting.ip == "" ? true : false
                 text: "IP DHCP 自动设置"
                 darkBackground: false
-                onCheckedChanged:{
-                    if(ipcheck.checked == false){
-                        ipfield.enabled = true;
-                        submaskfield.enabled = true;
-                        gatewayfield.enabled = true;
-                        dnscheck.checked = false;
+                onCheckedChanged: {
+                    if (ipcheck.checked == false) {
+                        ipfield.enabled = true
+                        submaskfield.enabled = true
+                        gatewayfield.enabled = true
+                        dnscheck.checked = false
                     } else {
-                        ipfield.enabled = false;
-                        submaskfield.enabled = false;
-                        gatewayfield.enabled = false;
+                        ipfield.enabled = false
+                        submaskfield.enabled = false
+                        gatewayfield.enabled = false
                     }
-
                 }
             }
 
@@ -70,67 +75,64 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 spacing: 16
-                Label{
+                Label {
                     text: "IP 地址   ："
                 }
-                TextField{
+                TextField {
                     id: ipfield
                     enabled: false
+                    text: serversetting.ip
                     floatingLabel: true
                     characterLimit: 15
-                    validator: RegExpValidator {
-                        regExp: /^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
-                    }
+                    validator: ipvalidator
                 }
             }
             RowLayout {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 spacing: 16
-                Label{
+                Label {
                     text: "子网掩码："
                 }
-                TextField{
+                TextField {
                     id: submaskfield
                     enabled: false
+                    text: serversetting.mask
                     floatingLabel: true
                     characterLimit: 15
-                    validator: RegExpValidator {
-                        regExp: /^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
-                    }
+                    validator: ipvalidator
                 }
             }
             RowLayout {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 spacing: 16
-                Label{
+                Label {
                     text: "默认网关："
                 }
-                TextField{
+                TextField {
                     id: gatewayfield
                     enabled: false
+                    text: serversetting.gateway
                     floatingLabel: true
                     characterLimit: 15
-                    validator: RegExpValidator {
-                        regExp: /^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
-                    }
+                    validator: ipvalidator
                 }
             }
 
             CheckBox {
                 id: dnscheck
-                checked: true
+                checked: serversetting.mainDNS == "" ? true : false
                 enabled: ipcheck.checked
                 text: "DNS DHCP 自动设置"
                 darkBackground: false
-                onCheckedChanged:{
-                    if(dnscheck.checked == true){
-                        firstdns.enabled = false;
-                        seconddns.enabled = false;
-                    }else{
-                        firstdns.enabled = true;
-                        seconddns.enabled = true;
+                onCheckedChanged: {
+                    if (dnscheck.checked == true) {
+                        firstdns.enabled = false
+                        seconddns.enabled = false
+                    } else {
+                        firstdns.enabled = true
+                        seconddns.enabled = true
                     }
                 }
             }
@@ -139,17 +141,16 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 spacing: 16
-                Label{
+                Label {
                     text: "首选 DNS 地址："
                 }
-                TextField{
+                TextField {
                     id: firstdns
                     enabled: false
+                    text: serversetting.mainDNS
                     floatingLabel: true
                     characterLimit: 15
-                    validator: RegExpValidator {
-                        regExp: /^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
-                    }
+                    validator: ipvalidator
                 }
             }
 
@@ -157,17 +158,16 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 spacing: 16
-                Label{
+                Label {
                     text: "备用 DNS 地址："
                 }
-                TextField{
+                TextField {
                     id: seconddns
                     enabled: false
+                    text: serversetting.secondDNS
                     floatingLabel: true
                     characterLimit: 15
-                    validator: RegExpValidator {
-                        regExp: /^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
-                    }
+                    validator: ipvalidator
                 }
             }
 
@@ -188,36 +188,133 @@ Item {
                 Button {
                     text: "确定"
                     textColor: Theme.primaryColor
-                    onClicked: {
-                        //TODO: Save settings
-                        var success = false;
-                        var wmiret = 0;
-                        var errstr = "";
-                        if (ipcheck.checked) {
-                            success = ipsettings.setAutoIp();
-                            errstr = "无法自动获取 IP 地址";
-                        } else {
-                            success = ipsettings.setStaticIp(ipfield.text, submaskfield.text, gatewayfield.text);
-                            errstr = "无法修改 IP 地址";
-                        }
-                        wmiret = ipsettings.wmiRetCode();
-                        if (!success || wmiret !== 0) {
-                            snackbar.open(errstr + "：" + wmiret);
-                            return;
-                        }
 
-                        if (dnscheck.checked) {
-                            success = ipsettings.setAutoDns();
-                            errstr = "无法自动获取 DNS";
-                        } else {
-                            success = ipsettings.setStaticDns(firstdns.text, seconddns.text);
-                            errstr = "无法修改 DNS";
+                    function saveIP() {
+                        if (!checkipvalidate()) {
+                            return false
                         }
-                        wmiret = ipsettings.wmiRetCode();
-                        if (!success || wmiret !== 0) {
-                            snackbar.open(errstr + "：" + wmiret);
-                        } else
+                        if ((ipfield.text == "") || (submaskfield.text == "")
+                                || (gatewayfield.text == "")) {
+                            snackbar.open("请输入正确的IP地址、子网掩码和默认网关")
+                            return false
+                        } else {
+                            var com_ok = ipsettings.setStaticIp(ipfield.text, submaskfield.text, gatewayfield.text);
+                            var wmierr = ipsettings.wmiRetCode();
+                            if (com_ok && !wmierr) {
+                                serversetting.storeIP(ipfield.text,
+                                                      submaskfield.text,
+                                                      gatewayfield.text)
+                                return true;
+                            } else
+                                return false;
+                        }
+                    }
+
+                    function saveDNS() {
+                        if (!checkdnsvalidate()) {
+                            return false
+                        }
+                        if ((firstdns.text == "")) {
+                            snackbar.open("请输入正确的DNS服务器地址")
+                            return false
+                        } else {
+                            var com_ok = ipsettings.setStaticDns(firstdns.text, seconddns.text);
+                            var wmierr = ipsettings.wmiRetCode();
+                            if (com_ok && !wmierr) {
+                                serversetting.storeDNS(firstdns.text,
+                                                       seconddns.text);
+                                return true;
+                            } else
+                                return false;
+                        }
+                    }
+
+                    function validateIPaddress(ipaddress) {
+                        if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+                                    ipaddress)) {
+                            return (true)
+                        }
+                        return (false)
+                    }
+
+                    function checkipvalidate() {
+                        if ((ipfield.text !== "") && (!validateIPaddress(
+                                                          ipfield.text))) {
+                            snackbar.open("IP地址输入错误，请重新输入")
+                            return false
+                        }
+                        if ((submaskfield.text !== "")
+                                && (!validateIPaddress(submaskfield.text))) {
+                            snackbar.open("子网掩码输入错误，请重新输入")
+                            return false
+                        }
+                        if ((gatewayfield.text !== "")
+                                && (!validateIPaddress(gatewayfield.text))) {
+                            snackbar.open("默认网关输入错误，请重新输入")
+                            return false
+                        }
+                        return true
+                    }
+
+                    function checkdnsvalidate() {
+                        if ((firstdns.text !== "") && (!validateIPaddress(
+                                                           firstdns.text))) {
+                            snackbar.open("首选DNS服务器地址输入错误，请重新输入")
+                            return false
+                        }
+                        if ((seconddns.text !== "") && (!validateIPaddress(
+                                                            seconddns.text))) {
+                            snackbar.open("备用DNS服务器地址输入错误，请重新输入")
+                            return false
+                        }
+                        return true
+                    }
+
+                    onClicked: {
+                        var com_ok = false;
+                        var wmierr = 0;
+
+                        if ((ipcheck.checked == true)
+                                && (dnscheck.checked == true)) {
+                            com_ok = ipsettings.setAutoIp();
+                            wmierr = ipsettings.wmiRetCode();
+                            if (com_ok && !wmierr) {
+                                serversetting.storeIP("", "", "");
+                            } else {
+                                snackbar.open("自动获取 IP 失败：" + wmierr);
+                                return;
+                            }
+
+                            com_ok = ipsettings.setAutoDns();
+                            wmierr = ipsettings.wmiRetCode();
+                            if (com_ok && !wmierr) {
+                                serversetting.storeDNS("", "")
+                            } else {
+                                snackbar.open("自动获取 DNS 失败：" + wmierr);
+                                return;
+                            }
+
                             snackbar.open("保存成功");
+
+                        } else if ((ipcheck.checked == true)
+                                   && (dnscheck.checked == false)) {
+                            com_ok = ipsettings.setAutoIp();
+                            wmierr = ipsettings.wmiRetCode();
+                            if (com_ok && !wmierr) {
+                                serversetting.storeIP("", "", "");
+                            } else {
+                                snackbar.open("自动获取 IP 失败：" + wmierr);
+                                return;
+                            }
+                            if (saveDNS() === true) {
+                                snackbar.open("DNS配置保存成功")
+                            }
+                        } else if ((ipcheck.checked == false)
+                                   && (dnscheck.checked == false)) {
+                            if ((saveDNS() === true) && saveIP() === true) {
+                                snackbar.open("手动配置保存成功")
+                            }
+                        }
                     }
                 }
             }
