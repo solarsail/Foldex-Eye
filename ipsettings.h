@@ -17,12 +17,11 @@ public:
 
     Q_PROPERTY(QString adapter READ adapter WRITE setAdapter)
 
-    Q_INVOKABLE bool selectAdapter(const QString &name);
-    Q_INVOKABLE bool setStaticIp(const QString &ip, const QString &netmask, const QString &gateway);
-    Q_INVOKABLE bool setStaticDns(const QString &primary, const QString &secondary);
-    Q_INVOKABLE bool setAutoIp();
-    Q_INVOKABLE bool setAutoDns();
-    Q_INVOKABLE int wmiRetCode();
+    Q_INVOKABLE int selectAdapter(const QString &name);
+    Q_INVOKABLE int setStaticIp(const QString &ip, const QString &netmask, const QString &gateway);
+    Q_INVOKABLE int setStaticDns(const QString &primary, const QString &secondary);
+    Q_INVOKABLE int setAutoIp();
+    Q_INVOKABLE int setAutoDns();
 
     QString adapter() const;
 
@@ -32,6 +31,10 @@ signals:
 public slots:
     void setAdapter(QString adapter);
 
+private:
+#ifdef Q_OS_WIN
+    int retCode(bool success);
+#endif
 };
 
 #endif // IPSETTINGS_H

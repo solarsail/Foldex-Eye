@@ -195,18 +195,19 @@ Item {
                         }
                         if ((ipfield.text == "") || (submaskfield.text == "")
                                 || (gatewayfield.text == "")) {
-                            snackbar.open("请输入正确的IP地址、子网掩码和默认网关")
+                            snackbar.open("请输入正确的 IP 地址、子网掩码和默认网关")
                             return false
                         } else {
-                            var com_ok = ipsettings.setStaticIp(ipfield.text, submaskfield.text, gatewayfield.text);
-                            var wmierr = ipsettings.wmiRetCode();
-                            if (com_ok && !wmierr) {
+                            var err = ipsettings.setStaticIp(ipfield.text, submaskfield.text, gatewayfield.text);
+                            if (!err) {
                                 serversetting.storeIP(ipfield.text,
                                                       submaskfield.text,
                                                       gatewayfield.text)
                                 return true;
-                            } else
+                            } else {
+                                snackbar.open("设置静态 IP 失败：" + err);
                                 return false;
+                            }
                         }
                     }
 
@@ -215,17 +216,18 @@ Item {
                             return false
                         }
                         if ((firstdns.text == "")) {
-                            snackbar.open("请输入正确的DNS服务器地址")
+                            snackbar.open("请输入正确的 DNS 服务器地址")
                             return false
                         } else {
-                            var com_ok = ipsettings.setStaticDns(firstdns.text, seconddns.text);
-                            var wmierr = ipsettings.wmiRetCode();
-                            if (com_ok && !wmierr) {
+                            var err = ipsettings.setStaticDns(firstdns.text, seconddns.text);
+                            if (!err) {
                                 serversetting.storeDNS(firstdns.text,
                                                        seconddns.text);
                                 return true;
-                            } else
+                            } else {
+                                snackbar.open("设置静态 DNS 失败：" + err);
                                 return false;
+                            }
                         }
                     }
 
@@ -240,7 +242,7 @@ Item {
                     function checkipvalidate() {
                         if ((ipfield.text !== "") && (!validateIPaddress(
                                                           ipfield.text))) {
-                            snackbar.open("IP地址输入错误，请重新输入")
+                            snackbar.open("IP 地址输入错误，请重新输入")
                             return false
                         }
                         if ((submaskfield.text !== "")
@@ -259,38 +261,35 @@ Item {
                     function checkdnsvalidate() {
                         if ((firstdns.text !== "") && (!validateIPaddress(
                                                            firstdns.text))) {
-                            snackbar.open("首选DNS服务器地址输入错误，请重新输入")
+                            snackbar.open("首选 DNS 服务器地址输入错误，请重新输入")
                             return false
                         }
                         if ((seconddns.text !== "") && (!validateIPaddress(
                                                             seconddns.text))) {
-                            snackbar.open("备用DNS服务器地址输入错误，请重新输入")
+                            snackbar.open("备用 DNS 服务器地址输入错误，请重新输入")
                             return false
                         }
                         return true
                     }
 
                     onClicked: {
-                        var com_ok = false;
-                        var wmierr = 0;
+                        var err = -1;
 
                         if ((ipcheck.checked == true)
                                 && (dnscheck.checked == true)) {
-                            com_ok = ipsettings.setAutoIp();
-                            wmierr = ipsettings.wmiRetCode();
-                            if (com_ok && !wmierr) {
+                            err = ipsettings.setAutoIp();
+                            if (!err) {
                                 serversetting.storeIP("", "", "");
                             } else {
-                                snackbar.open("自动获取 IP 失败：" + wmierr);
+                                snackbar.open("自动获取 IP 失败：" + err);
                                 return;
                             }
 
-                            com_ok = ipsettings.setAutoDns();
-                            wmierr = ipsettings.wmiRetCode();
-                            if (com_ok && !wmierr) {
+                            err = ipsettings.setAutoDns();
+                            if (!err) {
                                 serversetting.storeDNS("", "")
                             } else {
-                                snackbar.open("自动获取 DNS 失败：" + wmierr);
+                                snackbar.open("自动获取 DNS 失败：" + err);
                                 return;
                             }
 
@@ -298,16 +297,15 @@ Item {
 
                         } else if ((ipcheck.checked == true)
                                    && (dnscheck.checked == false)) {
-                            com_ok = ipsettings.setAutoIp();
-                            wmierr = ipsettings.wmiRetCode();
-                            if (com_ok && !wmierr) {
+                            err = ipsettings.setAutoIp();
+                            if (!err) {
                                 serversetting.storeIP("", "", "");
                             } else {
-                                snackbar.open("自动获取 IP 失败：" + wmierr);
+                                snackbar.open("自动获取 IP 失败：" + err);
                                 return;
                             }
                             if (saveDNS() === true) {
-                                snackbar.open("DNS配置保存成功")
+                                snackbar.open("DNS 配置保存成功")
                             }
                         } else if ((ipcheck.checked == false)
                                    && (dnscheck.checked == false)) {

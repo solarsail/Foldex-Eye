@@ -17,13 +17,14 @@ public:
 	bool set_static_ip(LPCTSTR lpszIP, LPCTSTR lpszNetmask, LPCTSTR lpszGateway);
 	bool set_auto_dns();
 	bool set_auto_ip();
-	HRESULT call_result() const;
-	int wmi_result() const;
-	void print_wmi_error(HRESULT hr);
-	void  CreateOneElementBstrArray(VARIANT *v, LPCWSTR s);
 	char* init_error_str() const;
 
+	HRESULT call_result() const;
+	int wmi_result() const;
+
 private:
+	void print_wmi_error(HRESULT hr);
+	void CreateOneElementBstrArray(VARIANT *v, LPCWSTR s);
 	bool adapter_selected() const;
 
 private:
