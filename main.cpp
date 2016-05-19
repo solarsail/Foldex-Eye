@@ -7,6 +7,7 @@
 #include "rdpprocess.h"
 #include "heartbeat.h"
 #include "systempower.h"
+#include "ipsettings.h"
 
 void test_ssl()
 {
@@ -40,6 +41,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<RDPProcess>("com.evercloud.rdp", 0, 1, "RDPProcess");
     qmlRegisterType<HeartBeat>("com.evercloud.conn", 0, 1, "HeartBeat");
     qmlRegisterType<SystemPower>("com.evercloud.sys", 0, 1, "SystemPower");
+    qmlRegisterType<IPSettings>("com.evercloud.sys", 0, 1, "IPSettings");
     qmlRegisterSingletonType("com.evercloud.conn", 0, 1, "UserConnection", conn_singleton_provider);
 
     QGuiApplication app(argc, argv);

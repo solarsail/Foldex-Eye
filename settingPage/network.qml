@@ -3,6 +3,7 @@ import Material 0.2
 import QtQuick.Controls 1.3 as Controls
 import QtQuick.Layouts 1.1
 import Material.ListItems 0.1 as ListItem
+import com.evercloud.sys 0.1
 
 Item {
     Settingstore {
@@ -194,13 +195,19 @@ Item {
                         }
                         if ((ipfield.text == "") || (submaskfield.text == "")
                                 || (gatewayfield.text == "")) {
-                            snackbar.open("请输入正确的IP地址、子网掩码和默认网关")
+                            snackbar.open("请输入正确的 IP 地址、子网掩码和默认网关")
                             return false
                         } else {
-                            serversetting.storeIP(ipfield.text,
-                                                  submaskfield.text,
-                                                  gatewayfield.text)
-                            return true
+                            var err = ipsettings.setStaticIp(ipfield.text, submaskfield.text, gatewayfield.text);
+                            if (!err) {
+                                serversetting.storeIP(ipfield.text,
+                                                      submaskfield.text,
+                                                      gatewayfield.text)
+                                return true;
+                            } else {
+                                snackbar.open("设置静态 IP 失败：" + err);
+                                return false;
+                            }
                         }
                     }
 
@@ -209,12 +216,18 @@ Item {
                             return false
                         }
                         if ((firstdns.text == "")) {
-                            snackbar.open("请输入正确的DNS服务器地址")
+                            snackbar.open("请输入正确的 DNS 服务器地址")
                             return false
                         } else {
-                            serversetting.storeDNS(firstdns.text,
-                                                   seconddns.text)
-                            return true
+                            var err = ipsettings.setStaticDns(firstdns.text, seconddns.text);
+                            if (!err) {
+                                serversetting.storeDNS(firstdns.text,
+                                                       seconddns.text);
+                                return true;
+                            } else {
+                                snackbar.open("设置静态 DNS 失败：" + err);
+                                return false;
+                            }
                         }
                     }
 
@@ -229,7 +242,7 @@ Item {
                     function checkipvalidate() {
                         if ((ipfield.text !== "") && (!validateIPaddress(
                                                           ipfield.text))) {
-                            snackbar.open("IP地址输入错误，请重新输入")
+                            snackbar.open("IP 地址输入错误，请重新输入")
                             return false
                         }
                         if ((submaskfield.text !== "")
@@ -248,29 +261,51 @@ Item {
                     function checkdnsvalidate() {
                         if ((firstdns.text !== "") && (!validateIPaddress(
                                                            firstdns.text))) {
-                            snackbar.open("首选DNS服务器地址输入错误，请重新输入")
+                            snackbar.open("首选 DNS 服务器地址输入错误，请重新输入")
                             return false
                         }
                         if ((seconddns.text !== "") && (!validateIPaddress(
                                                             seconddns.text))) {
-                            snackbar.open("备用DNS服务器地址输入错误，请重新输入")
+                            snackbar.open("备用 DNS 服务器地址输入错误，请重新输入")
                             return false
                         }
                         return true
                     }
 
                     onClicked: {
+                        var err = -1;
+
                         if ((ipcheck.checked == true)
                                 && (dnscheck.checked == true)) {
-                            //TODO: DHCP settings
-                            serversetting.storeIP("", "", "")
-                            serversetting.storeDNS("", "")
-                            snackbar.open("保存成功")
+                            err = ipsettings.setAutoIp();
+                            if (!err) {
+                                serversetting.storeIP("", "", "");
+                            } else {
+                                snackbar.open("自动获取 IP 失败：" + err);
+                                return;
+                            }
+
+                            err = ipsettings.setAutoDns();
+                            if (!err) {
+                                serversetting.storeDNS("", "")
+                            } else {
+                                snackbar.open("自动获取 DNS 失败：" + err);
+                                return;
+                            }
+
+                            snackbar.open("保存成功");
+
                         } else if ((ipcheck.checked == true)
                                    && (dnscheck.checked == false)) {
-                            serversetting.storeIP("", "", "")
+                            err = ipsettings.setAutoIp();
+                            if (!err) {
+                                serversetting.storeIP("", "", "");
+                            } else {
+                                snackbar.open("自动获取 IP 失败：" + err);
+                                return;
+                            }
                             if (saveDNS() === true) {
-                                snackbar.open("DNS配置保存成功")
+                                snackbar.open("DNS 配置保存成功")
                             }
                         } else if ((ipcheck.checked == false)
                                    && (dnscheck.checked == false)) {
@@ -286,5 +321,10 @@ Item {
 
     Snackbar {
         id: snackbar
+    }
+
+    IPSettings {
+        id: ipsettings
+        adapter: "vEthernet (wlan-vswitch)"
     }
 }
