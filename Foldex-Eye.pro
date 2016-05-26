@@ -38,6 +38,7 @@ isEmpty(TARGET_EXT) {
 }
 
 win32 {
+    DEFINES += _AMD64_
     DEPLOY_DLL = windeployqt
     DEPLOY_EXTRA = $(INSTALL_FILE)
 
