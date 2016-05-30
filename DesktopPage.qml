@@ -58,7 +58,7 @@ Page {
                 onClicked: {
                     UserConnection.currentHost = host;
                     UserConnection.currentVm = vm_id;
-                    request.url = "http://" + serversetting.server + ":8893/conn";
+                    request.url = "http://" + serversetting.server + ":8893/v1/conn";
                     request.jsonData = JSON.stringify({ 'token': token, 'vm_id': vm_id });
                     request.sendJson();
                 }
@@ -111,7 +111,7 @@ Page {
 
     HeartBeat {
         id: heartbeat
-        url: "http://" + serversetting.server + ":8893/heartbeat"
+        url: "http://" + serversetting.server + ":8893/v1/heartbeat"
         onError: { // 心跳异常
             heartbeat.stop();
             desktop_selection.heartbeat_error = true;
