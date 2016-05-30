@@ -191,7 +191,7 @@ Page {
             onClicked: {
                 login_button.visible = false;
                 login_progress.visible = true;
-                request.url = "http://" + settings.server + ":8893/login";
+                request.url = "http://" + settings.server + ":8893/v1/login";
                 request.jsonData = JSON.stringify({
                                                       username: username.text,
                                                       password: password.text

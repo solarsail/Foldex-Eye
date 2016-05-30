@@ -42,9 +42,11 @@ RDPProcess::RDPProcess(QObject *parent) : QProcess(parent)
 void RDPProcess::start()
 {
     QString program("wfreerdp.bin");
-    //QString args;
     program.append(" /f")
-           .append(" /bpp:32")
+           .append(" /bpp:24")
+           .append(" /rfx")
+           .append(" /compression")
+           .append(" /sound")
            .append(" /u:").append(username())
            .append(" /p:").append(password())
            .append(" /v:").append(host());
