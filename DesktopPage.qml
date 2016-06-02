@@ -56,7 +56,6 @@ Page {
             delegate: Button {
                 text: name;
                 onClicked: {
-                    UserConnection.currentHost = host;
                     UserConnection.currentVm = vm_id;
                     request.url = "http://" + serversetting.server + ":8893/v1/conn";
                     request.jsonData = JSON.stringify({ 'token': token, 'vm_id': vm_id });
@@ -87,6 +86,10 @@ Page {
             }
 
             heartbeat.startSending(UserConnection.token);
+            // 断开连接
+            disconn_request.url = "http://" + serversetting.server + ":8893/v1/disconn";
+            disconn_request.jsonData = JSON.stringify({ "token": UserConnection.token, "vm_id": UserConnection.currentVm });
+            disconn_request.sendJson();
         }
     }
 
@@ -94,12 +97,13 @@ Page {
         id: request
         onResponseChanged: {
             var code = request.code;
-            var response = request.response;
+            var response = JSON.parse(request.response);
 
             if (code === 200) {
                 rdp.username = UserConnection.username;
                 rdp.password = UserConnection.password;
-                rdp.host = UserConnection.currentHost;
+                rdp.host = response[UserConnection.currentVm]["rdp_ip"];
+                rdp.port = response[UserConnection.currentVm]["rdp_port"];
                 rdp.start();
                 heartbeat.startSending(UserConnection.token, UserConnection.currentVm);
             } else {
@@ -107,6 +111,10 @@ Page {
             }
 
         }
+    }
+
+    Request {
+        id: disconn_request
     }
 
     HeartBeat {
