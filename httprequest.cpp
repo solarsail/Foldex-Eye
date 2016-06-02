@@ -13,6 +13,7 @@ HTTPRequest::~HTTPRequest()
 
 void HTTPRequest::sendJson()
 {
+    qDebug() << "to URL: " << url();
     qDebug() << "sending data: " << jsonData();
     QNetworkRequest request;
     request.setUrl(QUrl(url()));

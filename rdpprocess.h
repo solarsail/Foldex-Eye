@@ -12,6 +12,7 @@ class RDPProcess : public QProcess
     QString _host;
     bool _smoothFont;
     bool _dragFullWindow;
+    QString _port;
 
 public:
     explicit RDPProcess(QObject *parent = 0);
@@ -19,6 +20,7 @@ public:
     Q_PROPERTY(QString username READ username WRITE setUsername)
     Q_PROPERTY(QString password READ password WRITE setPassword)
     Q_PROPERTY(QString host READ host WRITE setHost)
+    Q_PROPERTY(QString port READ port WRITE setPort)
     Q_PROPERTY(bool smoothFont READ smoothFont WRITE setSmoothFont)
     Q_PROPERTY(bool dragFullWindow READ dragFullWindow WRITE setDragFullWindow)
 
@@ -31,6 +33,7 @@ public:
     QString host() const;
     bool smoothFont() const;
     bool dragFullWindow() const;
+    QString port() const;
 
 
 public slots:
@@ -40,6 +43,7 @@ public slots:
     void setHost(QString host);
     void setSmoothFont(bool smoothFont);
     void setDragFullWindow(bool dragFullWindow);
+    void setPort(QString port);
 
 };
 

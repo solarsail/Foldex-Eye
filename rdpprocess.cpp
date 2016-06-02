@@ -16,7 +16,8 @@ void RDPProcess::start()
            .append(" /sound")
            .append(" /u:").append(username())
            .append(" /p:").append(password())
-           .append(" /v:").append(host());
+           .append(" /v:").append(host())
+           .append(" /port:").append(port());
     if (smoothFont())
         program.append(" /fonts");
     if (dragFullWindow())
@@ -67,6 +68,11 @@ bool RDPProcess::dragFullWindow() const
     return _dragFullWindow;
 }
 
+QString RDPProcess::port() const
+{
+    return _port;
+}
+
 void RDPProcess::setUsername(QString username)
 {
     _username = username;
@@ -90,4 +96,9 @@ void RDPProcess::setSmoothFont(bool smoothFont)
 void RDPProcess::setDragFullWindow(bool dragFullWindow)
 {
     _dragFullWindow = dragFullWindow;
+}
+
+void RDPProcess::setPort(QString port)
+{
+    _port = port;
 }
