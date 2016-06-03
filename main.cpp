@@ -17,13 +17,14 @@ void test_ssl()
 static QJSValue conn_singleton_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
-    static QString username, password, info, host, vm, token;
+    static QString username, password, info, host, port, vm, token;
 
     QJSValue profile = scriptEngine->newObject();
     profile.setProperty("username", username);
     profile.setProperty("password", password);
     profile.setProperty("info", info);
     profile.setProperty("currentHost", host);
+    profile.setProperty("currentPort", port);
     profile.setProperty("currentVm", vm);
     profile.setProperty("token", token);
     return profile;
