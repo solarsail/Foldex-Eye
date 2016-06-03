@@ -1,3 +1,4 @@
+#include <bitset>
 #include <QDebug>
 #include "rdpprocess.h"
 #ifdef Q_OS_WIN
@@ -55,7 +56,9 @@ void RDPProcess::start()
         program.append(" /fonts");
     if (dragFullWindow())
         program.append(" /window-drag");
-    program.append(usbRedirArgument());
+    std::bitset<32> policy_bits(policy());
+    if (policy_bits[Enable_Drive_Redir])
+        program.append(usbRedirArgument());
 
     qDebug() << program;
 
@@ -102,6 +105,11 @@ bool RDPProcess::dragFullWindow() const
     return _dragFullWindow;
 }
 
+int RDPProcess::policy() const
+{
+    return _policy;
+}
+
 QString RDPProcess::port() const
 {
     return _port;
@@ -130,6 +138,11 @@ void RDPProcess::setSmoothFont(bool smoothFont)
 void RDPProcess::setDragFullWindow(bool dragFullWindow)
 {
     _dragFullWindow = dragFullWindow;
+}
+
+void RDPProcess::setPolicy(int policy)
+{
+    _policy = policy;
 }
 
 void RDPProcess::setPort(QString port)

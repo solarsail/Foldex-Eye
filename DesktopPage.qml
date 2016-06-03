@@ -104,6 +104,7 @@ Page {
                 rdp.password = UserConnection.password;
                 rdp.host = response[UserConnection.currentVm]["rdp_ip"];
                 rdp.port = response[UserConnection.currentVm]["rdp_port"];
+                rdp.policy = response[UserConnection.currentVm]["policy"];
                 rdp.start();
                 heartbeat.startSending(UserConnection.token, UserConnection.currentVm);
             } else {
