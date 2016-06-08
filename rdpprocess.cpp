@@ -35,7 +35,12 @@ QString usbRedirArgument()
     return arg;
 }
 
-RDPProcess::RDPProcess(QObject *parent) : QProcess(parent)
+RDPProcess::RDPProcess(QObject *parent) :
+    QProcess(parent),
+    _port("3389"),
+    _policy(1),
+    _smoothFont(true),
+    _dragFullWindow(false)
 {
 
 }
