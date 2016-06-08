@@ -114,7 +114,7 @@ Page {
                 top: password.bottom
                 topMargin: -6
                 left: password.left
-                leftMargin: -16
+                leftMargin: -15
             }
             text: "记住用户名"
             textSize: 10
