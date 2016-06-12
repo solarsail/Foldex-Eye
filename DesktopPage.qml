@@ -17,6 +17,8 @@ Page {
     }
 
     property bool heartbeat_error: false
+    property date session_start: new Date()
+    property int rdp_retry: 0
 
     Component.onCompleted: {
         parse_info();
@@ -42,13 +44,26 @@ Page {
         }
     }
 
+    ProgressCircle {
+        // 连接过程中显示进度圈
+        id: conn_progress
+        anchors.centerIn: vm_buttons
+
+        visible: false
+    }
+
     ListModel {
         id: hosts
     }
 
     Row {
-        anchors.centerIn: parent
-        spacing: 20
+        id: vm_buttons
+        anchors {
+            bottom: parent.bottom
+            bottomMargin: 100
+            horizontalCenter: parent.horizontalCenter
+        }
+        spacing: 25
 
         Repeater {
             model: hosts
@@ -60,6 +75,8 @@ Page {
                     request.url = "http://" + serversetting.server + ":8893/v1/conn";
                     request.jsonData = JSON.stringify({ 'token': token, 'vm_id': vm_id });
                     request.sendJson();
+                    vm_buttons.visible = false;
+                    conn_progress.visible = true;
                 }
             }
 
@@ -78,12 +95,25 @@ Page {
 
         onFinished: {
             var code = rdp.status();
-            if (code !== 0) {
-                prompt.open("连接错误：" + rdp.status())
-            }
             if (desktop_selection.heartbeat_error) { // 心跳异常，需要重新登录
                 desktop_selection.pop();
             }
+            if (code !== 0) {
+                prompt.open("连接错误：" + rdp.status())
+            } else if (new Date() - desktop_selection.session_start < 500) {
+                // 0.5秒内断开，可能是vm未完全启动，或其他异常情况，重试
+                if (desktop_selection.rdp_retry == 10) {
+                    // 重试次数超过阈值
+                    prompt.open("无法连接到桌面");
+                } else {
+                    desktop_selection.rdp_retry++;
+                    rdp_repeater.start();
+                    return;
+                }
+            }
+            conn_progress.visible = false;
+            vm_buttons.visible = true;
+            desktop_selection.rdp_retry = 0;
 
             heartbeat.startSending(UserConnection.token);
             // 断开连接
@@ -104,6 +134,7 @@ Page {
                 rdp.password = UserConnection.password;
                 rdp.host = response[UserConnection.currentVm]["rdp_ip"];
                 rdp.port = response[UserConnection.currentVm]["rdp_port"];
+                desktop_selection.session_start = new Date();
                 rdp.start();
                 heartbeat.startSending(UserConnection.token, UserConnection.currentVm);
             } else {
@@ -132,5 +163,15 @@ Page {
 
     Snackbar {
         id: prompt
+    }
+
+    Timer {
+        id: rdp_repeater
+        interval: 1000
+        repeat: false
+        onTriggered: {
+            desktop_selection.session_start = new Date();
+            rdp.start();
+        }
     }
 }
