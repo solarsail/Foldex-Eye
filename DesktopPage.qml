@@ -175,6 +175,10 @@ Page {
                 heartbeat.startSending(UserConnection.token, UserConnection.currentVm);
             } else {
                 prompt.open("无法启动虚拟机：" + response["err"])
+                conn_progress.visible = false;
+                vm_buttons.visible = true;
+                desktop_selection.rdp_retry = 0;
+
             }
 
         }
