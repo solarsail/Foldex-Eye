@@ -107,21 +107,14 @@ Page {
                 horizontalCenter: parent.horizontalCenter
             }
 
-            function input_is_valid() {
-                return username.text !== "" && password.text !== ""
+            onAccepted: {
+                if(input_is_valid()){
+                    login_button.clicked()
+                }
             }
 
-            onAccepted: {
-                if (input_is_valid()) {
-                    login_button.visible = false
-                    login_progress.visible = true
-                    request.url = "http://" + settings.server + ":8893/v1/login"
-                    request.jsonData = JSON.stringify({
-                                                          username: username.text,
-                                                          password: password.text
-                                                      })
-                    request.sendJson()
-                }
+            function input_is_valid() {
+                return username.text !== "" && password.text !== ""
             }
         }
 
