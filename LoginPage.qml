@@ -78,6 +78,16 @@ Page {
                 topMargin: 95
                 horizontalCenter: parent.horizontalCenter
             }
+
+            onAccepted: {
+                if(input_is_valid()){
+                    login_button.clicked()
+                }
+            }
+
+            function input_is_valid() {
+                return username.text !== "" && password.text !== ""
+            }
         }
 
         TextField {
