@@ -71,7 +71,7 @@ Page {
                 token: info["token"],
                 vm_id: vm_id,
                 name: detail["name"],
-                host: detail["floating_ips"][0]});
+                host: detail["public_ip"]});
         }
     }
 
