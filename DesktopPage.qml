@@ -4,7 +4,7 @@ import Material 0.2
 import com.evercloud.rdp 0.1
 import com.evercloud.conn 0.1
 import com.evercloud.http 0.1
-import "./settingPage"
+import "./settingPage" as Setting
 
 Page {
     id: desktop_selection
@@ -208,7 +208,7 @@ Page {
         }
     }
 
-    Settingstore {
+    Setting.Settingstore {
         id: serversetting
     }
 
