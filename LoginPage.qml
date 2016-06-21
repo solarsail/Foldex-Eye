@@ -66,7 +66,7 @@ Page {
             boxColor: "#d6d6d6"
 
             onTextChanged: {
-                username.hasError = false;
+                username.hasError = false
                 if (username.text === "") {
                     keep_username.checked = false
                 }
@@ -78,6 +78,16 @@ Page {
                 top: logo.bottom
                 topMargin: 95
                 horizontalCenter: parent.horizontalCenter
+            }
+
+            onAccepted: {
+                if(input_is_valid()){
+                    login_button.clicked()
+                }
+            }
+
+            function input_is_valid() {
+                return username.text !== "" && password.text !== ""
             }
         }
 
@@ -93,8 +103,8 @@ Page {
             boxColor: "#d6d6d6"
 
             onTextChanged: {
-                password.hasError = false;
-                password.helperText = "";
+                password.hasError = false
+                password.helperText = ""
                 if (password.text === "") {
                     keep_password.checked = false
                 }
@@ -106,6 +116,16 @@ Page {
                 top: username.bottom
                 topMargin: 10
                 horizontalCenter: parent.horizontalCenter
+            }
+
+            onAccepted: {
+                if(input_is_valid()){
+                    login_button.clicked()
+                }
+            }
+
+            function input_is_valid() {
+                return username.text !== "" && password.text !== ""
             }
         }
 
@@ -190,12 +210,12 @@ Page {
                 request.jsonData = JSON.stringify({
                                                       username: username.text,
                                                       password: password.text
-                                                  });
-                request.sendJson();
+                                                  })
+                request.sendJson()
             }
 
             function input_is_valid() {
-                return username.text !== "" && password.text !== "";
+                return username.text !== "" && password.text !== ""
             }
         }
     }
@@ -223,13 +243,12 @@ Page {
             }
 
             if (powerAction === "shutdown") {
-                sys.shutdown();
+                sys.shutdown()
             } else if (powerAction === "reboot") {
-                sys.reboot();
+                sys.reboot()
             } else {
-                console.log("unknown power action");
+                console.log("unknown power action")
             }
-
         }
     }
 
@@ -276,7 +295,7 @@ Page {
             hoverAnimation: true
             color: Theme.dark.iconColor
             onClicked: {
-                shutDownDialog.powerAction = "reboot";
+                shutDownDialog.powerAction = "reboot"
                 shutDownDialog.text = "确定要重启吗？"
                 shutDownDialog.show()
             }
@@ -288,7 +307,7 @@ Page {
             color: Theme.dark.iconColor
             hoverAnimation: true
             onClicked: {
-                shutDownDialog.powerAction = "shutdown";
+                shutDownDialog.powerAction = "shutdown"
                 shutDownDialog.text = "确定要关机吗？"
                 shutDownDialog.show()
             }
@@ -303,33 +322,33 @@ Page {
     Request {
         id: request
         onResponseChanged: {
-            var code = request.code;
-            var response = request.response;
+            var code = request.code
+            var response = request.response
 
-            login_progress.visible = false;
-            login_button.visible = true;
+            login_progress.visible = false
+            login_button.visible = true
 
             if (code === 401) {
-                username.hasError = true;
-                password.hasError = true;
+                username.hasError = true
+                password.hasError = true
                 //password.helperText = "用户名或密码错误";
-                prompt.open("用户名或密码错误");
+                prompt.open("用户名或密码错误")
             } else if (code === 500) {
-                prompt.open("服务暂时不可用");
+                prompt.open("服务暂时不可用")
             } else if (code === 200) {
-                UserConnection.username = username.text;
-                UserConnection.password = password.text;
-                UserConnection.info = response;
+                UserConnection.username = username.text
+                UserConnection.password = password.text
+                UserConnection.info = response
                 if (!keep_username.checked) {
-                    username.text = "";
+                    username.text = ""
                 }
                 if (!keep_password.checked) {
-                    password.text = "";
+                    password.text = ""
                 }
 
-                pageStack.push(Qt.resolvedUrl("DesktopPage.qml"));
+                pageStack.push(Qt.resolvedUrl("DesktopPage.qml"))
             } else {
-                prompt.open("连接服务器失败");
+                prompt.open("连接服务器失败")
             }
         }
     }
