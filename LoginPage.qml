@@ -5,6 +5,7 @@ import com.evercloud.http 0.1
 import com.evercloud.conn 0.1
 import com.evercloud.sys 0.1
 import "./settingPage"
+import "./settingPage/globalvar.js" as Globalvar
 
 Page {
     actionBar.hidden: true
@@ -180,9 +181,12 @@ Page {
 
             enabled: input_is_valid()
             onClicked: {
-                login_button.visible = false;
-                login_progress.visible = true;
-                request.url = "http://" + settings.server + ":8893/v1/login";
+                login_button.visible = false
+                login_progress.visible = true
+                if(Globalvar.serverip == ""){
+                    Globalvar.serverip = settings.server
+                }
+                request.url = "http://" + Globalvar.serverip + ":8893/v1/login"
                 request.jsonData = JSON.stringify({
                                                       username: username.text,
                                                       password: password.text

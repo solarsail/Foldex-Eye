@@ -12,5 +12,6 @@
         <file>image/1920.png</file>
         <file>image/bg_1366x768.png</file>
         <file>image/logo.png</file>
+        <file>settingPage/globalvar.js</file>
     </qresource>
 </RCC>
