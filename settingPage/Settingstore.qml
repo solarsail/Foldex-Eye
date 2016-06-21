@@ -1,4 +1,5 @@
 import Qt.labs.settings 1.0
+import "globalvar.js" as Globalvar
 
 Settings {
     id: settingConf
@@ -18,6 +19,7 @@ Settings {
 
     function storeServer(server) {
         settingConf.server = server;
+        Globalvar.serverip = server;
     }
 
     function storeIP(ip,mask,gateway){
