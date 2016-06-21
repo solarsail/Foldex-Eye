@@ -12,6 +12,10 @@
         <file>image/1920.png</file>
         <file>image/bg_1366x768.png</file>
         <file>image/logo.png</file>
+        <file>image/desktop-bottom-1920.png</file>
+        <file>image/desktop-top-1920.png</file>
         <file>settingPage/globalvar.js</file>
+        <file>image/win-1920.png</file>
+        <file>image/blank-1920.png</file>
     </qresource>
 </RCC>

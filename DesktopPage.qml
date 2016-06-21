@@ -12,12 +12,34 @@ Page {
     actionBar.hidden: true
 
     Image {
+        id: desktop_top_img
         fillMode: Image.PreserveAspectFit
-        source: "image/1920.png"
+        source: "image/desktop-top-1920.png"
         anchors {
             left: parent.left
             right: parent.right
             top: parent.top
+        }
+    }
+
+    Image {
+        fillMode: Image.PreserveAspectFit
+        source: "image/desktop-bottom-1920.png"
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: desktop_top_img.bottom
+        }
+    }
+
+    Image {
+        id: screen_img
+        fillMode: Image.PreserveAspectFit
+        source: "image/blank-1920.png"
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: desktop_top_img.bottom
         }
     }
 
@@ -71,7 +93,8 @@ Page {
                 token: info["token"],
                 vm_id: vm_id,
                 name: detail["name"],
-                host: detail["floating_ips"][0]});
+                host: detail["floating_ips"][0],
+                os: detail["os"]});
         }
     }
 
@@ -107,6 +130,7 @@ Page {
                 activeFocusOnPress: true
                 onClicked: {
                     UserConnection.currentVm = vm_id;
+                    screen_img.source = "image/" + os + "-1920.png";
                     request.url = "http://" + serversetting.server + ":8893/v1/conn";
                     request.jsonData = JSON.stringify({ 'token': token, 'vm_id': vm_id });
                     request.sendJson();
