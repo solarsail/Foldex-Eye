@@ -12,12 +12,23 @@ Page {
     actionBar.hidden: true
 
     Image {
+        id: screen_img
         fillMode: Image.PreserveAspectFit
-        source: "image/1920.png"
+        source: "image/desktop-top-1920.png"
         anchors {
             left: parent.left
             right: parent.right
             top: parent.top
+        }
+    }
+
+    Image {
+        fillMode: Image.PreserveAspectFit
+        source: "image/desktop-bottom-1920.png"
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: screen_img.bottom
         }
     }
 
