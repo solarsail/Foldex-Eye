@@ -5,7 +5,7 @@ import Material 0.2
 ApplicationWindow {
     id: main
 
-    title: "Foldex-Eye"
+    title: "ECDesktop"
 
     visible: true
 

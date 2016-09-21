@@ -1,8 +1,7 @@
 import QtQuick 2.4
 import QtQuick.Controls 1.4 as QmlControls
 import Material 0.2
-import com.evercloud.http 0.1
-import com.evercloud.conn 0.1
+import com.evercloud.viewer 0.1
 import com.evercloud.sys 0.1
 import "./settingPage"
 import "./settingPage/globalvar.js" as Globalvar
@@ -56,21 +55,14 @@ Page {
         }
 
         TextField {
-            // 用户名输入框
-            id: username
+            // 连接 Uri 输入框
+            id: conn_uri
 
-            placeholderText: "用户名"
+            placeholderText: "连接 Uri"
             font.pixelSize: 14
             showBorder: false
             showBox: true
             boxColor: "#d6d6d6"
-
-            onTextChanged: {
-                username.hasError = false
-                if (username.text === "") {
-                    keep_username.checked = false
-                }
-            }
 
             width: 280
             height: 30
@@ -87,93 +79,32 @@ Page {
             }
 
             function input_is_valid() {
-                return username.text !== "" && password.text !== ""
-            }
-        }
-
-        TextField {
-            // 密码输入框
-            id: password
-
-            placeholderText: "密码"
-            echoMode: TextInput.Password
-            font.pixelSize: 14
-            showBorder: false
-            showBox: true
-            boxColor: "#d6d6d6"
-
-            onTextChanged: {
-                password.hasError = false
-                password.helperText = ""
-                if (password.text === "") {
-                    keep_password.checked = false
-                }
-            }
-
-            width: 280
-            height: 30
-            anchors {
-                top: username.bottom
-                topMargin: 10
-                horizontalCenter: parent.horizontalCenter
-            }
-
-            onAccepted: {
-                if(input_is_valid()){
-                    login_button.clicked()
-                }
-            }
-
-            function input_is_valid() {
-                return username.text !== "" && password.text !== ""
+                return conn_uri.text !== ""
             }
         }
 
         CheckBox {
-            id: keep_username
+            id: keep_uri
             anchors {
-                top: password.bottom
+                top: conn_uri.bottom
                 topMargin: -6
-                left: password.left
+                left: conn_uri.left
                 leftMargin: -15
             }
-            text: "记住用户名"
+            text: "记住连接字符串"
             textSize: 10
-            enabled: username.text !== ""
-            onCheckedChanged: function () {
-                if (keep_username.checked == false) {
-                    keep_password.checked = false
-                }
-            }
+            enabled: conn_uri.text !== ""
         }
 
-        CheckBox {
-            id: keep_password
-            anchors {
-                top: password.bottom
-                topMargin: -6
-                right: password.right
-            }
-            text: "记住密码"
-            textSize: 10
-            enabled: password.text !== "" && keep_username.checked
-            checked: true
-        }
 
         Component.onCompleted: {
             if (settings.user !== '') {
-                username.text = settings.user
-                keep_username.checked = true
+                conn_uri.text = settings.uri
+                keep_uri.checked = true
             } else {
-                keep_username.checked = false
+                keep_uri.checked = false
             }
 
-            if (settings.passwd !== '') {
-                password.text = settings.passwd
-                keep_password.checked = true
-            } else {
-                keep_password.checked = false
-            }
         }
 
         ProgressCircle {
@@ -187,7 +118,7 @@ Page {
             // 登录按钮
             id: login_button
             anchors {
-                top: keep_username.bottom
+                top: keep_uri.bottom
                 topMargin: -1
                 horizontalCenter: parent.horizontalCenter
             }
@@ -195,7 +126,7 @@ Page {
             width: 280
             height: 32
 
-            text: "登录"
+            text: "连接"
             elevation: 1
             backgroundColor: Theme.accentColor
 
@@ -203,19 +134,12 @@ Page {
             onClicked: {
                 login_button.visible = false
                 login_progress.visible = true
-                if(Globalvar.serverip == ""){
-                    Globalvar.serverip = settings.server
-                }
-                request.url = "http://" + Globalvar.serverip + ":8893/v1/login"
-                request.jsonData = JSON.stringify({
-                                                      username: username.text,
-                                                      password: password.text
-                                                  })
-                request.sendJson()
+                viewer.uri = conn_uri.text
+                viewer.start()
             }
 
             function input_is_valid() {
-                return username.text !== "" && password.text !== ""
+                return conn_uri.text !== ""
             }
         }
     }
@@ -230,16 +154,9 @@ Page {
         negativeButtonText: "取消"
 
         onAccepted: {
-            //保存当前用户名或密码逻辑
-            if ((keep_username.checked == true)
-                    && (keep_password.checked == false)) {
-                settings.storeUser(username.text, '')
-            } else if ((keep_username.checked == true)
-                       && (keep_password.checked == true)
-                       && (username.text !== '')) {
-                settings.storeUser(username.text, password.text)
-            } else if (keep_username.checked == false) {
-                settings.storeUser('', '')
+            // 保存当前连接 Uri
+            if (keep_uri.checked == true) {
+                settings.storeUri(conn_uri.text, '')
             }
 
             if (powerAction === "shutdown") {
@@ -319,37 +236,19 @@ Page {
         id: prompt
     }
 
-    Request {
-        id: request
-        onResponseChanged: {
-            var code = request.code
-            var response = request.response
-
-            login_progress.visible = false
-            login_button.visible = true
-
-            if (code === 401) {
-                username.hasError = true
-                password.hasError = true
-                //password.helperText = "用户名或密码错误";
-                prompt.open("用户名或密码错误")
-            } else if (code === 500) {
-                prompt.open("服务暂时不可用")
-            } else if (code === 200) {
-                UserConnection.username = username.text
-                UserConnection.password = password.text
-                UserConnection.info = response
-                if (!keep_username.checked) {
-                    username.text = ""
-                }
-                if (!keep_password.checked) {
-                    password.text = ""
-                }
-
-                pageStack.push(Qt.resolvedUrl("DesktopPage.qml"))
-            } else {
-                prompt.open("连接服务器失败")
+    RemoteViewer {
+        id: viewer
+        onFinished: {
+            if (exitCode !== 0) {
+                prompt.open("连接错误：" + exitCode)
             }
+            login_progress.visible = false;
+            login_button.visible = true;
+        }
+        onErrorOccurred: {
+            prompt.open("连接错误：" + "(" + error + ") " + viewer.errorDescription())
+            login_progress.visible = false;
+            login_button.visible = true;
         }
     }
 

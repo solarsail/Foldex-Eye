@@ -4,11 +4,9 @@ QT += qml quick
 CONFIG += c++11
 
 SOURCES += main.cpp \
-    httprequest.cpp \
-    rdpprocess.cpp \
-    heartbeat.cpp \
     systempower.cpp \
-    ipsettings.cpp
+    ipsettings.cpp \
+    remoteviewer.cpp
 
 RESOURCES += qml.qrc
 QMAKE_LFLAGS += /MANIFESTUAC:\"level=\'requireAdministrator\' uiAccess=\'false\'\"
@@ -20,12 +18,10 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 HEADERS += \
-    httprequest.h \
-    rdpprocess.h \
-    heartbeat.h \
     systempower.h \
     lib/adapter_config.h \
-    ipsettings.h
+    ipsettings.h \
+    remoteviewer.h
 
 isEmpty(TARGET_EXT) {
     win32 {

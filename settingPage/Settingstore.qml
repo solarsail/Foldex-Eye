@@ -3,8 +3,7 @@ import "globalvar.js" as Globalvar
 
 Settings {
     id: settingConf
-    property string user: ""
-    property string passwd: ""
+    property string uri: ""
     property string server: ""
     property string ip: ""
     property string mask: ""
@@ -12,9 +11,8 @@ Settings {
     property string mainDNS: ""
     property string secondDNS: ""
 
-    function storeUser(username,password){
-        settingConf.user = username;
-        settingConf.passwd = password;
+    function storeUri(uri) {
+        settingConf.uri = uri;
     }
 
     function storeServer(server) {
@@ -22,13 +20,13 @@ Settings {
         Globalvar.serverip = server;
     }
 
-    function storeIP(ip,mask,gateway){
+    function storeIP(ip, mask, gateway) {
         settingConf.ip = ip;
         settingConf.mask = mask;
         settingConf.gateway = gateway;
     }
 
-    function storeDNS(first,second){
+    function storeDNS(first, second) {
         settingConf.mainDNS = first;
         settingConf.secondDNS = second;
     }
