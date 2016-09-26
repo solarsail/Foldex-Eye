@@ -159,8 +159,8 @@ Page {
             }
             if (code !== 0) {
                 prompt.open("连接错误：" + rdp.status())
-            } else if (new Date() - desktop_selection.session_start < 500) {
-                // 0.5秒内断开，可能是vm未完全启动，或其他异常情况，重试
+            } else if (new Date() - desktop_selection.session_start < 1000) {
+                // 1秒内断开，可能是vm未完全启动，或其他异常情况，重试
                 if (desktop_selection.rdp_retry == 10) {
                     // 重试次数超过阈值
                     prompt.open("无法连接到桌面");
