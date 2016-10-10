@@ -145,7 +145,7 @@ Page {
     RDPProcess {
         id: rdp
         smoothFont: true
-        dragFullWindow: true
+        dragFullWindow: false
 
         onErrorOccurred: {
             var err = rdp.errorCode();
@@ -161,7 +161,7 @@ Page {
                 prompt.open("连接错误：" + rdp.status())
             } else if (new Date() - desktop_selection.session_start < 1000) {
                 // 1秒内断开，可能是vm未完全启动，或其他异常情况，重试
-                if (desktop_selection.rdp_retry == 10) {
+                if (desktop_selection.rdp_retry == 20) {
                     // 重试次数超过阈值
                     prompt.open("无法连接到桌面");
                 } else {
