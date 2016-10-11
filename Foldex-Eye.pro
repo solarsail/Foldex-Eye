@@ -23,8 +23,11 @@ HEADERS += \
     rdpprocess.h \
     heartbeat.h \
     systempower.h \
-    lib/adapter_config.h \
     ipsettings.h
+
+win32 {
+    HEADERS += lib/adapter_config.h
+}
 
 isEmpty(TARGET_EXT) {
     win32 {

@@ -42,7 +42,7 @@ RDPProcess::RDPProcess(QObject *parent) : QProcess(parent)
 
 void RDPProcess::start()
 {
-    QString program("wfreerdp.bin");
+    QString program("freerdp");
     program.append(" /f")
            .append(" /bpp:24")
            .append(" /rfx")

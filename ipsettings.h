@@ -1,7 +1,9 @@
 #ifndef IPSETTINGS_H
 #define IPSETTINGS_H
 
+#ifdef Q_OS_WIN
 #include "adapter_config.h"
+#endif
 #include <QObject>
 
 class IPSettings : public QObject

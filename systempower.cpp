@@ -21,7 +21,8 @@ void SystemPower::reboot()
        .append(" /t 0");
     QProcess::startDetached(cmd);
     #elif defined(Q_OS_LINUX)
-    // NOT IMPLEMENTED
+    QString cmd("reboot");
+    QProcess::startDetached(cmd);
     #endif // platform
 #else
     qDebug() << "REBOOT: in debug mode, just quit";
@@ -39,7 +40,8 @@ void SystemPower::shutdown()
        .append(" /t 0");
     QProcess::startDetached(cmd);
     #elif defined(Q_OS_LINUX)
-    // NOT IMPLEMENTED
+    QString cmd("poweroff");
+    QProcess::startDetached(cmd);
     #endif // platform
 #else
     qDebug() << "SHUTDOWN: in debug mode: just quit";
