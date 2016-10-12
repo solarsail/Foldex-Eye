@@ -44,11 +44,12 @@ void RDPProcess::start()
 {
     QString program("wfreerdp.bin");
     program.append(" /f")
-           .append(" /bpp:32")
+           //.append(" /bpp:24")
            //.append(" /rfx")
            .append(" /gdi:sw")
            //.append(" /compression")
            .append(" /sound")
+           .append(" -wallpaper")
            .append(" /u:").append(username())
            .append(" /p:").append(password())
            .append(" /v:").append(host())
