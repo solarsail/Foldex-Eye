@@ -1,70 +1,99 @@
 #include <bitset>
 #include <QDebug>
+#include <QFile>
 #include "rdpprocess.h"
 #ifdef Q_OS_WIN
 #include <fileapi.h>
 #include <intrin.h>
 #endif
 
-QString usbRedirArgument()
-{
-    QString arg;
-#ifdef Q_OS_WIN
-    // FIXME: 使用路径映射，为了支持尚未插入的u盘需要将下一个或
-    //        多个空盘符映射过去，虚拟机中能看到无内容的空盘符。
-    //        考虑改为usb设备映射。
-    static LPCTSTR letters = L"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    unsigned long index = 0;
-    LPTSTR drive = new TCHAR[4] {L'C', L':', L'\\', L'\0'};
-    for (index = 3; index < 25; ++index) {
-        TCHAR letter = letters[index];
-        drive[0] = letter;
-        UINT type = GetDriveType(drive);
-        qDebug() << QString::fromUtf16((ushort*)drive) << type;
-        if (type <= 2/*DRIVE_REMOVABLE*/) {
-            // 映射当前已插入的u盘，以及之后可能插入的u盘
-            arg.append(" /a:drive,").append(letter).append(",").append(letter).append(":\\");
-            if (type < 2) // DRIVE_NO_ROOT_DIR or DRIVE_UNKNOWN
-                // 只映射一个未插入的u盘
-                break;
-        }
-    }
-    delete[] drive;
-#else
-#endif
-    return arg;
-}
-
 RDPProcess::RDPProcess(QObject *parent) : QProcess(parent)
 {
 
 }
 
+QString generate_connnection_file(QString &host, QString &port, bool redir)
+{
+    QString redirstr;
+    if (redir) redirstr = "DynamicDrives";
+    QString content;
+    content.append("screen mode id:i:2\n")
+           .append("use multimon:i:0\n")
+           .append("desktopwidth:i:1920\n")
+           .append("desktopheight:i:1200\n")
+           .append("session bpp:i:24\n")
+           .append("winposstr:s:0,1,0,0,1920,1200\n")
+           .append("compression:i:1\n")
+           .append("keyboardhook:i:2\n")
+           .append("audiocapturemode:i:0\n")
+           .append("videoplaybackmode:i:1\n")
+           .append("connection type:i:6\n")
+           .append("networkautodetect:i:0\n")
+           .append("bandwidthautodetect:i:1\n")
+           .append("displayconnectionbar:i:0\n")
+           .append("enableworkspacereconnect:i:0\n")
+           .append("disable wallpaper:i:0\n")
+           .append("allow font smoothing:i:1\n")
+           .append("allow desktop composition:i:1\n")
+           .append("disable full window drag:i:1\n")
+           .append("disable menu anims:i:1\n")
+           .append("disable themes:i:0\n")
+           .append("disable cursor setting:i:0\n")
+           .append("bitmapcachepersistenable:i:1\n")
+           .append("full address:s:").append(host).append(":").append(port).append("\n")
+           .append("audiomode:i:0\n")
+           .append("redirectprinters:i:0\n")
+           .append("redirectcomports:i:0\n")
+           .append("redirectsmartcards:i:0\n")
+           .append("redirectclipboard:i:0\n")
+           .append("redirectposdevices:i:0\n")
+           .append("drivestoredirect:s:").append(redirstr).append("\n")
+           .append("autoreconnection enabled:i:1\n")
+           .append("authentication level:i:0\n")
+           .append("prompt for credentials:i:0\n")
+           .append("negotiate security layer:i:1\n")
+           .append("remoteapplicationmode:i:0\n")
+           .append("gatewayusagemethod:i:4\n")
+           .append("gatewaycredentialssource:i:4\n")
+           .append("gatewayprofileusagemethod:i:0\n")
+           .append("promptcredentialonce:i:0\n");
+
+    qDebug() << content;
+    QFile connfile("rdp_conn.rdp");
+    if (connfile.open(QIODevice::WriteOnly)) {
+        QTextStream fs(&connfile);
+        fs << content;
+        connfile.close();
+    }
+    return QString("rdp_conn.rdp");
+}
+
 void RDPProcess::start()
 {
-    QString program("wfreerdp.bin");
-    program.append(" /f")
-           //.append(" /bpp:24")
-           //.append(" /rfx")
-           .append(" /gdi:sw")
-           //.append(" /compression")
-           .append(" /sound")
-           .append(" -wallpaper")
-           .append(" /u:").append(username())
-           .append(" /p:").append(password())
-           .append(" /v:").append(host())
-           .append(" /port:").append(port());
-    if (smoothFont())
-        program.append(" /fonts");
-    if (dragFullWindow())
-        program.append(" /window-drag");
     std::bitset<32> policy_bits(policy());
-    if (policy_bits[Enable_Drive_Redir])
-        program.append(usbRedirArgument());
+    QString connfile = generate_connnection_file(host(), port(), policy_bits[Enable_Drive_Redir]);
+
+    QString key("cmdkey");
+    key.append(" /add:TERMSRV/").append(host())
+       .append(" /user:").append(username())
+       .append(" /pass:").append(password());
+    qDebug() << key;
+    QProcess::execute(key);
+
+    QString program("mstsc ");
+    program.append(connfile)
+           .append(" /f");
 
     qDebug() << program;
-
     QProcess::start(program);
+}
+
+void RDPProcess::cleanup()
+{
+    QString key("cmdkey /delete:TERMSRV/");
+    key.append(host());
+    qDebug() << key;
+    QProcess::execute(key);
 }
 
 int RDPProcess::status() const

@@ -32,6 +32,7 @@ public:
     Q_PROPERTY(int policy READ policy WRITE setPolicy)
 
     Q_INVOKABLE void start();
+    Q_INVOKABLE void cleanup();
     Q_INVOKABLE int status() const;
     Q_INVOKABLE QString errorCode() const;
 

@@ -59,6 +59,9 @@ int main(int argc, char *argv[])
 #ifndef QT_DEBUG
     QWindowList windows = QGuiApplication::topLevelWindows();
     QWindow *main_window = windows[0];
+    //main_window->setFlags(Qt::FramelessWindowHint);
+    //main_window->showMaximized();
+    QObject::connect( main_window, &QWindow::activeChanged, main_window, &QWindow::requestUpdate );
     main_window->showFullScreen();
 #endif // QT_DEBUG
 

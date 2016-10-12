@@ -170,6 +170,7 @@ Page {
                     return;
                 }
             }
+            rdp.cleanup();
             conn_progress.visible = false;
             vm_buttons.visible = true;
             desktop_selection.rdp_retry = 0;
