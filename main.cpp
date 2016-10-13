@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QWindow>
 #include <QtQml>
+#include <QScreen>
 #include <QSslSocket>
 #include "httprequest.h"
 #include "rdpprocess.h"
@@ -28,6 +29,19 @@ static QJSValue conn_singleton_provider(QQmlEngine *engine, QJSEngine *scriptEng
     profile.setProperty("currentVm", vm);
     profile.setProperty("token", token);
     return profile;
+}
+
+void logOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    static const char* levels[] = {
+        "Debug", "Warning", "Critical", "Fatal", "Info"
+    };
+    QFile logfile("d:\\hslog.txt");
+    if (logfile.open(QIODevice::Append)) {
+        QTextStream fs(&logfile);
+        fs << QDateTime::currentDateTime().toString(Qt::ISODate) << "|" << levels[type] << "|" << msg << "\r\n";
+        logfile.close();
+    }
 }
 
 int main(int argc, char *argv[])
@@ -57,12 +71,20 @@ int main(int argc, char *argv[])
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
 #ifndef QT_DEBUG
+    qInstallMessageHandler(logOutput);
     QWindowList windows = QGuiApplication::topLevelWindows();
     QWindow *main_window = windows[0];
-    //main_window->setFlags(Qt::FramelessWindowHint);
+    main_window->setFlags(Qt::FramelessWindowHint);
+    QRect size = QGuiApplication::screens()[0]->availableGeometry();
+    qDebug() << size;
+    size.setLeft(1);
+    size.setTop(1);
+    size.setRight(size.right()-1);
+    size.setBottom(size.bottom()-1);
+    main_window->setGeometry(size);
     //main_window->showMaximized();
-    QObject::connect( main_window, &QWindow::activeChanged, main_window, &QWindow::requestUpdate );
-    main_window->showFullScreen();
+    //QObject::connect( main_window, &QWindow::activeChanged, main_window, &QWindow::requestUpdate );
+    //main_window->showFullScreen();
 #endif // QT_DEBUG
 
     return app.exec();
