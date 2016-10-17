@@ -16,19 +16,6 @@ Page {
         anchors.fill: parent
     }
 
-    Image {
-        anchors {
-            top: parent.top
-            topMargin: 20
-            left: parent.left
-            leftMargin: 24
-        }
-
-        source: "image/logo.png"
-        sourceSize.width: 197
-        sourceSize.height: 39
-    }
-
     Settingstore {
         id: settings
     }
@@ -51,8 +38,8 @@ Page {
             }
 
             source: "image/logo.png"
-            sourceSize.width: 197
-            sourceSize.height: 39
+            sourceSize.width: 250
+            sourceSize.height: 91
         }
 
         TextField {
@@ -76,7 +63,7 @@ Page {
             height: 30
             anchors {
                 top: logo.bottom
-                topMargin: 95
+                topMargin: 40
                 horizontalCenter: parent.horizontalCenter
             }
 

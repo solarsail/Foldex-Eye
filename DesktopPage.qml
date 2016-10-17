@@ -23,6 +23,19 @@ Page {
     }
 
     Image {
+        anchors {
+            top: parent.top
+            topMargin: 20
+            right: parent.right
+            rightMargin: 24
+        }
+
+        source: "image/logo-mono.png"
+        sourceSize.width: 200
+        sourceSize.height: 73
+    }
+
+    Image {
         fillMode: Image.PreserveAspectFit
         source: "image/desktop-bottom-1920.png"
         anchors {

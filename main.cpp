@@ -36,7 +36,7 @@ void logOutput(QtMsgType type, const QMessageLogContext &context, const QString 
     static const char* levels[] = {
         "Debug", "Warning", "Critical", "Fatal", "Info"
     };
-    QFile logfile("d:\\hslog.txt");
+    QFile logfile("c:\\hslog.txt");
     if (logfile.open(QIODevice::Append)) {
         QTextStream fs(&logfile);
         fs << QDateTime::currentDateTime().toString(Qt::ISODate) << "|" << levels[type] << "|" << msg << "\r\n";

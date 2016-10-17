@@ -18,5 +18,6 @@
         <file>settingPage/globalvar.js</file>
         <file>image/win-1920.png</file>
         <file>image/blank-1920.png</file>
+        <file>image/logo-mono.png</file>
     </qresource>
 </RCC>
