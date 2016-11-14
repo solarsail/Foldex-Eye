@@ -87,5 +87,6 @@ int main(int argc, char *argv[])
     //main_window->showFullScreen();
 #endif // QT_DEBUG
 
+    QProcess::startDetached("cadblock.bin");
     return app.exec();
 }

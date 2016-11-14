@@ -34,7 +34,7 @@ ApplicationWindow {
 
     Shortcut {
         // 关闭程序快捷键，供调试用
-        sequence: "Ctrl+P,Ctrl+Q"
+        sequence: "Ctrl+P,Ctrl+Q,Ctrl+Z,Ctrl+M"
         onActivated: {
             closeKeysTriggered = true;
             main.close();
