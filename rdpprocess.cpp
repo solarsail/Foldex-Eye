@@ -18,7 +18,7 @@ QString generate_connnection_file(QString &host, QString &port, bool redir)
     if (redir) redirstr = "DynamicDrives";
     QString content;
     content.append("screen mode id:i:2\n")
-           .append("use multimon:i:0\n")
+           .append("use multimon:i:1\n")
            .append("desktopwidth:i:1920\n")
            .append("desktopheight:i:1200\n")
            .append("session bpp:i:24\n")
@@ -42,10 +42,10 @@ QString generate_connnection_file(QString &host, QString &port, bool redir)
            .append("bitmapcachepersistenable:i:1\n")
            .append("full address:s:").append(host).append(":").append(port).append("\n")
            .append("audiomode:i:0\n")
-           .append("redirectprinters:i:0\n")
-           .append("redirectcomports:i:0\n")
-           .append("redirectsmartcards:i:0\n")
-           .append("redirectclipboard:i:0\n")
+           .append("redirectprinters:i:1\n")
+           .append("redirectcomports:i:1\n")
+           .append("redirectsmartcards:i:1\n")
+           .append("redirectclipboard:i:1\n")
            .append("redirectposdevices:i:0\n")
            .append("drivestoredirect:s:").append(redirstr).append("\n")
            .append("autoreconnection enabled:i:1\n")
@@ -56,7 +56,8 @@ QString generate_connnection_file(QString &host, QString &port, bool redir)
            .append("gatewayusagemethod:i:4\n")
            .append("gatewaycredentialssource:i:4\n")
            .append("gatewayprofileusagemethod:i:0\n")
-           .append("promptcredentialonce:i:0\n");
+           .append("promptcredentialonce:i:0\n")
+           .append("devicestoredirect:s:*");
 
     qDebug() << content;
     QFile connfile("rdp_conn.rdp");
@@ -74,7 +75,7 @@ void RDPProcess::start()
     QString connfile = generate_connnection_file(host(), port(), policy_bits[Enable_Drive_Redir]);
 
     QString key("cmdkey");
-    key.append(" /add:TERMSRV/").append(host())
+    key.append(" /generic:").append(host())
        .append(" /user:").append(username())
        .append(" /pass:").append(password());
     qDebug() << key;
@@ -90,7 +91,7 @@ void RDPProcess::start()
 
 void RDPProcess::cleanup()
 {
-    QString key("cmdkey /delete:TERMSRV/");
+    QString key("cmdkey /delete:");
     key.append(host());
     qDebug() << key;
     QProcess::execute(key);

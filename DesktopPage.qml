@@ -32,7 +32,6 @@ Page {
 
         source: "image/logo-mono.png"
         sourceSize.width: 200
-        sourceSize.height: 73
     }
 
     Image {

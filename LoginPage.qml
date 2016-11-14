@@ -37,9 +37,9 @@ Page {
                 horizontalCenter: parent.horizontalCenter
             }
 
-            source: "image/logo.png"
-            sourceSize.width: 250
-            sourceSize.height: 91
+
+            source: "image/logo-mono.png"
+            sourceSize.width: 280
         }
 
         TextField {
@@ -63,7 +63,7 @@ Page {
             height: 30
             anchors {
                 top: logo.bottom
-                topMargin: 40
+                topMargin: 50
                 horizontalCenter: parent.horizontalCenter
             }
 
