@@ -88,5 +88,7 @@ int main(int argc, char *argv[])
 #endif // QT_DEBUG
 
     QProcess::startDetached("cadblock.bin");
-    return app.exec();
+    int ret = app.exec();
+    QProcess::execute("taskkill /im cadblock.bin /f");
+    return ret;
 }
