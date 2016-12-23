@@ -19,6 +19,7 @@ class RDPProcess : public QProcess
     int _policy;
     bool _smoothFont;
     bool _dragFullWindow;
+    bool _domain_user;
 
 public:
     explicit RDPProcess(QObject *parent = 0);
@@ -44,6 +45,8 @@ public:
     bool dragFullWindow() const;
     int policy() const;
 
+private:
+    QString generate_connnection_file(QString &host, QString &port, bool redir);
 
 public slots:
     Q_INVOKABLE void kill();
