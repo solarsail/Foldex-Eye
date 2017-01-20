@@ -10,6 +10,9 @@
 #include "systempower.h"
 #include "ipsettings.h"
 
+#define UNUSED(x) x
+
+
 void test_ssl()
 {
     QSslSocket::supportsSsl();
@@ -33,6 +36,7 @@ static QJSValue conn_singleton_provider(QQmlEngine *engine, QJSEngine *scriptEng
 
 void logOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
+    UNUSED(context);
     static const char* levels[] = {
         "Debug", "Warning", "Critical", "Fatal", "Info"
     };

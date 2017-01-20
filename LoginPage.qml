@@ -24,7 +24,7 @@ Page {
         // 背景卡片
         radius: 3
         width: 490
-        height: 363
+        height: 403
         elevation: 3
         backgroundColor: "white"
         anchors.centerIn: parent
@@ -116,12 +116,49 @@ Page {
             }
         }
 
+        TextField {
+            // 二次验证码输入框
+            id: otp
+
+            placeholderText: "验证码"
+            echoMode: TextInput.Password
+            font.pixelSize: 14
+            showBorder: false
+            showBox: true
+            boxColor: "#d6d6d6"
+
+            onTextChanged: {
+                otp.hasError = false
+                otp.helperText = ""
+            }
+
+            width: 280
+            height: 30
+            anchors {
+                top: password.bottom
+                topMargin: 10
+                horizontalCenter: parent.horizontalCenter
+            }
+
+            visible: false // 之后由 otpreq 决定
+
+            onAccepted: {
+                if(input_is_valid()){
+                    login_button.clicked()
+                }
+            }
+
+            function input_is_valid() {
+                return username.text !== "" && password.text !== "" && otp.text !== ""
+            }
+        }
+
         CheckBox {
             id: keep_username
             anchors {
-                top: password.bottom
+                top: otp.bottom
                 topMargin: -6
-                left: password.left
+                left: otp.left
                 leftMargin: -15
             }
             text: "记住用户名"
@@ -137,9 +174,9 @@ Page {
         CheckBox {
             id: keep_password
             anchors {
-                top: password.bottom
+                top: otp.bottom
                 topMargin: -6
-                right: password.right
+                right: otp.right
             }
             text: "记住密码"
             textSize: 10
@@ -161,6 +198,8 @@ Page {
             } else {
                 keep_password.checked = false
             }
+
+            otpreq.sendJson()
         }
 
         ProgressCircle {
@@ -197,7 +236,7 @@ Page {
                 request.jsonData = JSON.stringify({
                                                       username: username.text,
                                                       password: password.text
-                                                  })
+                                                  }) // TODO: otp
                 request.sendJson()
             }
 
@@ -336,6 +375,20 @@ Page {
                 pageStack.push(Qt.resolvedUrl("DesktopPage.qml"))
             } else {
                 prompt.open("连接服务器失败")
+            }
+        }
+    }
+
+    Request {
+        id: otpreq
+        url: "http://" + settings.server + ":8893/v1/settings"
+        jsonData: JSON.stringify({ query: "otp" })
+        onResponseChanged: {
+            var code = otpreq.code
+            var res = otpreq.response
+            if (code === 200) {
+                var info = JSON.parse(res)
+                otp.visible = info["otp"]
             }
         }
     }
