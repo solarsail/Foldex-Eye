@@ -24,8 +24,8 @@ Page {
             url: "server.qml",
             icon: "device/storage"
         }, {
-            name: "协议配置",
-            url: "protocol.qml",
+            name: "设备信息",
+            url: "devinfo.qml",
             icon: "action/swap_horiz"
         }]
 

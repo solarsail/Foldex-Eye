@@ -6,6 +6,7 @@ Settings {
     property string user: ""
     property string passwd: ""
     property string server: ""
+    property string otpserver: ""
     property string ip: ""
     property string mask: ""
     property string gateway: ""
@@ -17,9 +18,11 @@ Settings {
         settingConf.passwd = password;
     }
 
-    function storeServer(server) {
+    function storeServer(server, otp) {
         settingConf.server = server;
         Globalvar.serverip = server;
+        settingConf.otpserver = otp;
+        Globalvar.otpserverip = otp;
     }
 
     function storeIP(ip,mask,gateway){

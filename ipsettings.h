@@ -22,6 +22,7 @@ public:
     Q_INVOKABLE int setStaticDns(const QString &primary, const QString &secondary);
     Q_INVOKABLE int setAutoIp();
     Q_INVOKABLE int setAutoDns();
+    Q_INVOKABLE QString getIp();
 
     QString adapter() const;
 

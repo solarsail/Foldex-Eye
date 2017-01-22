@@ -8,7 +8,8 @@ SOURCES += main.cpp \
     rdpprocess.cpp \
     heartbeat.cpp \
     systempower.cpp \
-    ipsettings.cpp
+    ipsettings.cpp \
+    devid.cpp
 
 RESOURCES += qml.qrc
 
@@ -24,7 +25,8 @@ HEADERS += \
     heartbeat.h \
     systempower.h \
     lib/adapter_config.h \
-    ipsettings.h
+    ipsettings.h \
+    devid.h
 
 isEmpty(TARGET_EXT) {
     win32 {

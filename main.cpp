@@ -9,6 +9,7 @@
 #include "heartbeat.h"
 #include "systempower.h"
 #include "ipsettings.h"
+#include "devid.h"
 
 #define UNUSED(x) x
 
@@ -61,6 +62,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<HeartBeat>("com.evercloud.conn", 0, 1, "HeartBeat");
     qmlRegisterType<SystemPower>("com.evercloud.sys", 0, 1, "SystemPower");
     qmlRegisterType<IPSettings>("com.evercloud.sys", 0, 1, "IPSettings");
+    qmlRegisterType<DevId>("com.evercloud.sys", 0, 1, "DevId");
     qmlRegisterSingletonType("com.evercloud.conn", 0, 1, "UserConnection", conn_singleton_provider);
 
     QGuiApplication app(argc, argv);

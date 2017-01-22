@@ -54,7 +54,7 @@ Item {
                 width: parent.width
                 spacing: 16
                 Label{
-                    text: "服务器 IP 地址："
+                    text: "桌面服务器地址："
                 }
                 TextField{
                     id: serverfield
@@ -67,7 +67,23 @@ Item {
                 }
             }
 
-
+            RowLayout {
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: parent.width
+                spacing: 16
+                Label{
+                    text: "OTP 服务器地址："
+                }
+                TextField{
+                    id: otpfield
+                    floatingLabel: true
+                    characterLimit: 15
+                    text: serversetting.otpserver
+                    validator: RegExpValidator {
+                        regExp: /^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
+                    }
+                }
+            }
 
             Item {
                 Layout.fillWidth: true
@@ -87,8 +103,8 @@ Item {
                     text: "确定"
                     textColor: Theme.primaryColor
                     onClicked: {
-                        //TODO: Save settings
-                        serversetting.storeServer(serverfield.text)
+                        // Save settings
+                        serversetting.storeServer(serverfield.text, otpfield.text)
                         snackbar.open("保存成功")
                     }
                 }

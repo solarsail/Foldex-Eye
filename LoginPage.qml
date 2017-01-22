@@ -74,7 +74,7 @@ Page {
             }
 
             function input_is_valid() {
-                return username.text !== "" && password.text !== ""
+                return username.text !== "" && password.text !== "" && (otp.text !== "" || otp.visible === false)
             }
         }
 
@@ -112,7 +112,7 @@ Page {
             }
 
             function input_is_valid() {
-                return username.text !== "" && password.text !== ""
+                return username.text !== "" && password.text !== "" && (otp.text !== "" || otp.visible === false)
             }
         }
 
@@ -140,16 +140,16 @@ Page {
                 horizontalCenter: parent.horizontalCenter
             }
 
-            visible: false // 之后由 otpreq 决定
+            visible: false // 之后由 otp_enable 决定
 
             onAccepted: {
-                if(input_is_valid()){
+                if(input_is_valid()) {
                     login_button.clicked()
                 }
             }
 
             function input_is_valid() {
-                return username.text !== "" && password.text !== "" && otp.text !== ""
+                return username.text !== "" && password.text !== "" && (otp.text !== "" || otp.visible === false)
             }
         }
 
@@ -199,7 +199,7 @@ Page {
                 keep_password.checked = false
             }
 
-            otpreq.sendJson()
+            otp_enable.sendJson()
         }
 
         ProgressCircle {
@@ -229,20 +229,33 @@ Page {
             onClicked: {
                 login_button.visible = false
                 login_progress.visible = true
-                if(Globalvar.serverip == ""){
+                if(Globalvar.serverip == "") {
                     Globalvar.serverip = settings.server
                 }
                 request.url = "http://" + Globalvar.serverip + ":8893/v1/login"
                 request.jsonData = JSON.stringify({
                                                       username: username.text,
                                                       password: password.text
-                                                  }) // TODO: otp
+                                                  })
                 request.sendJson()
             }
 
             function input_is_valid() {
-                return username.text !== "" && password.text !== ""
+                return username.text !== "" && password.text !== "" && (otp.text !== "" || otp.visible === false)
             }
+
+//            function auth_done(type) {
+//                var auth_pass = false;
+//                var auth_otp = false;
+//                if (type === "password") {
+//                    auth_pass = true;
+//                } else if (type === "otp") {
+//                    auth_otp = true;
+//                }
+//                if (auth_pass && auth_otp) {
+//                    pageStack.push(Qt.resolvedUrl("DesktopPage.qml"))
+//                }
+//            }
         }
     }
 
@@ -372,7 +385,11 @@ Page {
                     password.text = ""
                 }
 
-                pageStack.push(Qt.resolvedUrl("DesktopPage.qml"))
+                //pageStack.push(Qt.resolvedUrl("DesktopPage.qml"))
+                otp_auth.url = "http://" + settings.otpserver + ":8080/am/webauth/1/strong/authenticate?"
+                    + "tenantName=test&accessServerName=dev1&sharedSecret=111111"
+                    + "&loginName=" + username.text + "&password=" + password.text + otp.text
+                otp_auth.get()
             } else {
                 prompt.open("连接服务器失败")
             }
@@ -380,15 +397,33 @@ Page {
     }
 
     Request {
-        id: otpreq
+        id: otp_enable
         url: "http://" + settings.server + ":8893/v1/settings"
         jsonData: JSON.stringify({ query: "otp" })
         onResponseChanged: {
-            var code = otpreq.code
-            var res = otpreq.response
+            var code = otp_enable.code
+            var res = otp_enable.response
             if (code === 200) {
                 var info = JSON.parse(res)
                 otp.visible = info["otp"]
+            }
+        }
+    }
+
+    Request {
+        id: otp_auth
+        onResponseChanged: {
+            var code = otp_auth.code
+            var res = otp_auth.response
+            // TODO
+            if (code === 200) {
+                var info = JSON.parse(res)
+                if (info["success"])
+                    pageStack.push(Qt.resolvedUrl("DesktopPage.qml"))
+                else {
+                    otp.hasError = true
+                    prompt.open("动态口令错误")
+                }
             }
         }
     }

@@ -30,6 +30,20 @@ void HTTPRequest::sendJson()
             this, SLOT(onSslErrors(QList<QSslError>)));
 }
 
+void HTTPRequest::get()
+{
+    qDebug() << "to URL: " << url();
+    QNetworkRequest request;
+    request.setUrl(QUrl(url()));
+    QNetworkReply *reply = _netman->get(request); // reply 在处理函数中被删除
+
+    connect(reply, SIGNAL(finished()), this, SLOT(onFinished()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this, SLOT(onError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
+            this, SLOT(onSslErrors(QList<QSslError>)));
+}
+
 void HTTPRequest::onFinished()
 {
     QNetworkReply* reply = static_cast<QNetworkReply*>(sender());

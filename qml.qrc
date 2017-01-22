@@ -19,5 +19,6 @@
         <file>image/win-1920.png</file>
         <file>image/blank-1920.png</file>
         <file>image/logo-mono.png</file>
+        <file>settingPage/devinfo.qml</file>
     </qresource>
 </RCC>

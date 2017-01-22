@@ -22,6 +22,7 @@ public:
 
     // QML 可访问函数
     Q_INVOKABLE void sendJson();
+    Q_INVOKABLE void get();
 
     QString url() const;
     QString jsonData() const;

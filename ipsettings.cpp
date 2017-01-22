@@ -1,4 +1,5 @@
 #include <QDebug>
+#include <QNetworkInterface>
 #include <iostream>
 #include "ipsettings.h"
 
@@ -52,6 +53,25 @@ int IPSettings::setAutoDns()
     bool success = _conf.set_auto_dns();
     return retCode(success);
 #endif
+}
+
+QString IPSettings::getIp()
+{
+    auto interfaces = QNetworkInterface::allInterfaces();
+    for (auto nif : interfaces) {
+        qDebug() << nif.humanReadableName();
+        if (nif.humanReadableName() == _adapter) {
+            auto addresses = nif.addressEntries();
+            for (auto addr : addresses) {
+                auto ip = addr.ip().toString();
+                if (ip.indexOf(':') != -1) continue;
+                if (ip.startsWith("169.254")) continue;
+                qDebug() << ip;
+                return ip;
+            }
+        }
+    }
+    return "无法获取有效地址";
 }
 
 QString IPSettings::adapter() const

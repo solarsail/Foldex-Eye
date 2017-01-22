@@ -155,6 +155,7 @@ Item {
             }
 
             RowLayout {
+                id: second_dns
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 spacing: 16
@@ -174,6 +175,15 @@ Item {
             Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: Units.dp(8)
+            }
+
+            RowLayout {
+                anchors.left: second_dns.left
+                width: parent.width
+                spacing: 16
+                Label {
+                    text: "当前 IP 地址：" + ipsettings.getIp()
+                }
             }
 
             RowLayout {
@@ -325,6 +335,6 @@ Item {
 
     IPSettings {
         id: ipsettings
-        adapter: "vEthernet (wlan-vswitch)"
+        adapter: "本地连接"
     }
 }
