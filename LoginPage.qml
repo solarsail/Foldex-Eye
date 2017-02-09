@@ -231,6 +231,7 @@ Page {
                 login_progress.visible = true
                 if(Globalvar.serverip == "") {
                     Globalvar.serverip = settings.server
+                    Globalvar.otpserverip = settings.otpserver
                 }
                 request.url = "http://" + Globalvar.serverip + ":8893/v1/login"
                 request.jsonData = JSON.stringify({
@@ -385,11 +386,15 @@ Page {
                     password.text = ""
                 }
 
-                //pageStack.push(Qt.resolvedUrl("DesktopPage.qml"))
-                otp_auth.url = "http://" + settings.otpserver + ":8080/am/webauth/1/strong/authenticate?"
-                    + "tenantName=test&accessServerName=dev1&sharedSecret=111111"
-                    + "&loginName=" + username.text + "&password=" + password.text + otp.text
-                otp_auth.get()
+                if (otp.visible) {
+                    otp_auth.url = "http://" + Globalvar.otpserverip + ":8080/am/webauth/1/strong/authenticate?"
+                        + "tenantName=test&accessServerName=dev1&sharedSecret=123456"
+                        + "&loginName=" + username.text + "&password=" + password.text + otp.text
+                    otp_auth.get()
+                } else {
+                    pageStack.push(Qt.resolvedUrl("DesktopPage.qml"))
+                }
+
             } else {
                 prompt.open("连接服务器失败")
             }
@@ -405,7 +410,7 @@ Page {
             var res = otp_enable.response
             if (code === 200) {
                 var info = JSON.parse(res)
-                otp.visible = info["otp"]
+                otp.visible = (info["otp"] === "true" || info["otp"] === "True")
             }
         }
     }
@@ -424,6 +429,8 @@ Page {
                     otp.hasError = true
                     prompt.open("动态口令错误")
                 }
+            } else {
+                prompt.open("连接 OTP 服务器失败")
             }
         }
     }
