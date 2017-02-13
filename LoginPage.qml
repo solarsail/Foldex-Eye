@@ -245,18 +245,15 @@ Page {
                 return username.text !== "" && password.text !== "" && (otp.text !== "" || otp.visible === false)
             }
 
-//            function auth_done(type) {
-//                var auth_pass = false;
-//                var auth_otp = false;
-//                if (type === "password") {
-//                    auth_pass = true;
-//                } else if (type === "otp") {
-//                    auth_otp = true;
-//                }
-//                if (auth_pass && auth_otp) {
-//                    pageStack.push(Qt.resolvedUrl("DesktopPage.qml"))
-//                }
-//            }
+            function auth_success() {
+                if (!keep_username.checked) {
+                    username.text = ""
+                }
+                if (!keep_password.checked) {
+                    password.text = ""
+                }
+                pageStack.push(Qt.resolvedUrl("DesktopPage.qml"))
+            }
         }
     }
 
@@ -379,12 +376,6 @@ Page {
                 UserConnection.username = username.text
                 UserConnection.password = password.text
                 UserConnection.info = response
-                if (!keep_username.checked) {
-                    username.text = ""
-                }
-                if (!keep_password.checked) {
-                    password.text = ""
-                }
 
                 if (otp.visible) {
                     otp_auth.url = "http://" + Globalvar.otpserverip + ":8080/am/webauth/1/strong/authenticate?"
@@ -392,7 +383,7 @@ Page {
                         + "&loginName=" + username.text + "&password=" + password.text + otp.text
                     otp_auth.get()
                 } else {
-                    pageStack.push(Qt.resolvedUrl("DesktopPage.qml"))
+                    login_button.auth_success()
                 }
 
             } else {
@@ -420,12 +411,13 @@ Page {
         onResponseChanged: {
             var code = otp_auth.code
             var res = otp_auth.response
-            // TODO
+            console.info("otp response: " + res)
             if (code === 200) {
+                otp.text = ""
                 var info = JSON.parse(res)
-                if (info["success"])
-                    pageStack.push(Qt.resolvedUrl("DesktopPage.qml"))
-                else {
+                if (info["success"]) {
+                    login_button.auth_success()
+                } else {
                     otp.hasError = true
                     prompt.open("动态口令错误")
                 }
