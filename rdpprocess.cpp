@@ -10,8 +10,7 @@
 #define UNUSED(v) v
 
 RDPProcess::RDPProcess(QObject *parent) :
-    QProcess(parent),
-    _domain_user(true)
+    QProcess(parent)
 {
 
 }
@@ -58,21 +57,6 @@ QString RDPProcess::host() const
     return _host;
 }
 
-bool RDPProcess::smoothFont() const
-{
-    return _smoothFont;
-}
-
-bool RDPProcess::dragFullWindow() const
-{
-    return _dragFullWindow;
-}
-
-int RDPProcess::policy() const
-{
-    return _policy;
-}
-
 QString RDPProcess::port() const
 {
     return _port;
@@ -91,21 +75,6 @@ void RDPProcess::setPassword(QString password)
 void RDPProcess::setHost(QString host)
 {
     _host = host;
-}
-
-void RDPProcess::setSmoothFont(bool smoothFont)
-{
-    _smoothFont = smoothFont;
-}
-
-void RDPProcess::setDragFullWindow(bool dragFullWindow)
-{
-    _dragFullWindow = dragFullWindow;
-}
-
-void RDPProcess::setPolicy(int policy)
-{
-    _policy = policy;
 }
 
 void RDPProcess::setPort(QString port)

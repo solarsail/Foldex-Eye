@@ -354,6 +354,9 @@ Page {
     Snackbar {
         // 通知栏
         id: prompt
+        duration: 15000
+        buttonText: "确定"
+        onClicked: prompt.opened = false
     }
 
     Request {

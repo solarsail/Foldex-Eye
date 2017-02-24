@@ -156,12 +156,12 @@ Page {
 
     RDPProcess {
         id: rdp
-        smoothFont: true
-        dragFullWindow: false
 
         onErrorOccurred: {
             var err = rdp.errorCode();
-            prompt.open("无法连接到桌面：" + err)
+            prompt.open("无法连接到桌面：错误代码 " + err);
+            conn_progress.visible = false;
+            vm_buttons.visible = true;
         }
 
         onFinished: {
@@ -170,19 +170,21 @@ Page {
                 desktop_selection.pop();
             }
             if (code !== 0) {
-                prompt.open("连接错误：" + rdp.status())
-            } else if (new Date() - desktop_selection.session_start < 1000) {
-                // 1秒内断开，可能是vm未完全启动，或其他异常情况，重试
-                if (desktop_selection.rdp_retry == 20) {
-                    // 重试次数超过阈值
-                    prompt.open("无法连接到桌面");
+                if (new Date() - desktop_selection.session_start < 1000) {
+                    // 1秒内断开，可能是vm未完全启动，或其他异常情况，重试
+                    if (desktop_selection.rdp_retry == 20) {
+                        // 重试次数超过阈值
+                        prompt.open("无法连接到桌面：重试超过最大次数");
+                    } else {
+                        desktop_selection.rdp_retry++;
+                        rdp_repeater.start();
+                        return;
+                    }
                 } else {
-                    desktop_selection.rdp_retry++;
-                    rdp_repeater.start();
-                    return;
+                    prompt.open("无法连接到桌面：连接超时");
                 }
             }
-            //rdp.cleanup();
+
             conn_progress.visible = false;
             vm_buttons.visible = true;
             desktop_selection.rdp_retry = 0;
@@ -206,7 +208,6 @@ Page {
                 rdp.password = UserConnection.password;
                 rdp.host = response[UserConnection.currentVm]["rdp_ip"];
                 rdp.port = response[UserConnection.currentVm]["rdp_port"];
-                rdp.policy = response[UserConnection.currentVm]["policy"];
                 desktop_selection.session_start = new Date();
                 rdp.start();
                 heartbeat.startSending(UserConnection.token, UserConnection.currentVm);
@@ -240,6 +241,9 @@ Page {
 
     Snackbar {
         id: prompt
+        duration: 15000
+        buttonText: "确定"
+        onClicked: prompt.opened = false
     }
 
     Timer {
