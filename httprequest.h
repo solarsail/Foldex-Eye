@@ -5,12 +5,17 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
+// HTTP请求类。
+//
+//
 class HTTPRequest : public QObject
 {
     Q_OBJECT
+    // 禁止对象拷贝
     Q_DISABLE_COPY(HTTPRequest)
 
     // QML 可访问属性
+    // 发送地址
     Q_PROPERTY(QString url READ url WRITE setUrl NOTIFY urlChanged)
     Q_PROPERTY(QString jsonData READ jsonData WRITE setJsonData NOTIFY jsonDataChanged)
     Q_PROPERTY(QString response READ response NOTIFY responseChanged)

@@ -1,4 +1,5 @@
 import QtQuick 2.4
+import QtQuick.Layouts 1.1
 import QtQml.Models 2.2
 import Material 0.2
 import com.evercloud.rdp 0.1
@@ -110,12 +111,22 @@ Page {
         }
     }
 
-    ProgressCircle {
-        // 连接过程中显示进度圈
-        id: conn_progress
-        anchors.centerIn: vm_buttons
 
+    RowLayout {
+        id: conn_progress
+        width: Units.dp(300)
+        height: Units.dp(70)
+        spacing: Units.dp(16)
+        anchors.centerIn: vm_buttons
         visible: false
+
+        ProgressCircle {
+            // 连接过程中显示进度圈
+        }
+
+        Label {
+            text: "正在连接桌面……"
+        }
     }
 
     ListModel {
@@ -162,6 +173,7 @@ Page {
             prompt.open("无法连接到桌面：错误代码 " + err);
             conn_progress.visible = false;
             vm_buttons.visible = true;
+            // TODO: add log
         }
 
         onFinished: {
@@ -170,18 +182,14 @@ Page {
                 desktop_selection.pop();
             }
             if (code !== 0) {
-                if (new Date() - desktop_selection.session_start < 1000) {
-                    // 1秒内断开，可能是vm未完全启动，或其他异常情况，重试
-                    if (desktop_selection.rdp_retry == 20) {
-                        // 重试次数超过阈值
-                        prompt.open("无法连接到桌面：重试超过最大次数");
-                    } else {
-                        desktop_selection.rdp_retry++;
-                        rdp_repeater.start();
-                        return;
-                    }
-                } else {
+                if (desktop_selection.rdp_retry == 3) {
+                    // 重试次数超过阈值
                     prompt.open("无法连接到桌面：连接超时");
+                    // TODO: add log
+                } else {
+                    desktop_selection.rdp_retry++;
+                    rdp_repeater.start();
+                    return;
                 }
             }
 
@@ -251,7 +259,7 @@ Page {
         interval: 1000
         repeat: false
         onTriggered: {
-            desktop_selection.session_start = new Date();
+            //desktop_selection.session_start = new Date();
             rdp.start();
         }
     }
